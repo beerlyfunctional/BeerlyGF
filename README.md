@@ -55,3 +55,20 @@ Anyone can call a meeting at any time.
 What constitutes agreement on an issue?
 majority rule
 If someone feels strongly about something, we would hear the other person out before making a decision.
+
+# Scope Document 
+
+## MVP - untappd API 
+Page One: IDX - form/buttons, Search bar 
+Page Two: Search Results 
+Page Three: Details +save 
+Page Four: Saved Beers 
+
+## Stretch Goals 
+Circle search 
+Google maps API "where to find", Zomato as well?  
+Food Pairings (Additional API?) 
+2 week stretch: auth for untapped users 
+
+
+About Me: 
