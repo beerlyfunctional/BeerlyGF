@@ -1,6 +1,6 @@
 # BeerlyGF
 
-#Contact Plan
+# Contact Plan
 
 Team Hours: 
 
@@ -26,7 +26,7 @@ Strategies to be sure everyone is heard
 - Make sure everyone gets a chance to finish their sentences.
 - Verbal yes or no from everyone on decisions.
 
-#Conflict Plan 
+# Conflict Plan 
 
 How will you be sure you are creating a safe environment?
 - be respectful and thoughtful
