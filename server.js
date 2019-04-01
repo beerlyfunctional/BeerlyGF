@@ -1,6 +1,6 @@
 'use strict';
 
-//server requirements
+//server requirements (packages)
 const express = require('express');
 const superagent = require('superagent');
 const methodOverride = require('method-override');
