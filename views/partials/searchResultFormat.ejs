@@ -3,6 +3,7 @@
             <li class="beer-view" data-id='<%= body.data.name %>'>
             <% beers.forEach(beer => { %>
                 <h4>Name: <%= body.data.name %></h4>
+                <p> Style: <%= body.data.style.name %></p>
                 <img src= '<% ../../../../public/img/alcohol-alcoholic-beer-1161466.jpg %>''>
                 <p>brewery: <%= body.data.id %> </p>   <!-- This is the one that has a different call on it (brewerydb.com/v2/beer/:beerid/brewers? key=[APIkey]-->
                 <p> ABV: <%= body.data.abv %> </p>
