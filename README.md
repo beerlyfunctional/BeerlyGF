@@ -58,7 +58,7 @@ If someone feels strongly about something, we would hear the other person out be
 
 # Scope Document 
 
-## MVP - untappd API 
+## MVP
 Page One: IDX - form/buttons, Search bar 
 Page Two: Search Results 
 Page Three: Details +save 
