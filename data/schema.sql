@@ -4,13 +4,14 @@ DROP TABLE IF EXISTS styles;
 
 CREATE TABLE IF NOT EXISTS beers(
   id SERIAL PRIMARY KEY, 
-  time_stamp TIMESTAMP, 
+  name VARCHAR(255),
   beer_id VARCHAR(100),
   abv DEC(5,3),
+  style_name VARCHAR(255),
+  style_id INT, 
+  time_stamp TIMESTAMP, 
   usernote TEXT,
   userrate INT,
-  style VARCHAR(255),
-  style_id INT, 
   FOREIGN KEY(style_id) REFRENCES styles(id),
   brewery_id INT,
   FOREIGN KEY(brewery_id) REFRENCES brewery(id)
