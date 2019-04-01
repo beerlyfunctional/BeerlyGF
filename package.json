@@ -1,0 +1,20 @@
+{
+  "name": "beerlygf",
+  "version": "1.0.0",
+  "description": "Beer tasting and rating app for gluten free beers",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/beerlyfunctional/BeerlyGF.git"
+  },
+  "author": "T Herdon, M Cimakasky, J Van Volkinburg, J Talkington",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/beerlyfunctional/BeerlyGF/issues"
+  },
+  "homepage": "https://github.com/beerlyfunctional/BeerlyGF#readme"
+}
