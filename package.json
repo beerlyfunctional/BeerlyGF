@@ -16,5 +16,13 @@
   "bugs": {
     "url": "https://github.com/beerlyfunctional/BeerlyGF/issues"
   },
-  "homepage": "https://github.com/beerlyfunctional/BeerlyGF#readme"
+  "homepage": "https://github.com/beerlyfunctional/BeerlyGF#readme",
+  "dependencies": {
+    "dotenv": "^7.0.0",
+    "ejs": "^2.6.1",
+    "express": "^4.16.4",
+    "method-override": "^3.0.0",
+    "pg": "^7.9.0",
+    "superagent": "^5.0.2"
+  }
 }
