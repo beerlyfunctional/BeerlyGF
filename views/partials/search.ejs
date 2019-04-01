@@ -1,0 +1,22 @@
+<form action= "../search-results.ejs" method= "POST">
+    <input type= "text" name= "findBeer" placeholder=" Search beer by brewery, name, or style/type" required>
+    <fieldset> 
+        <label for="brewery">
+            <span> Brewery </span>
+            <input type= "radio" name= "findBeer" value= "brewery" required> 
+        </label>
+    </fieldset>
+    <fieldset> 
+        <label for="name">
+            <span> Name </span>
+            <input type= "radio" name= "findBeer" value= "name" required> 
+        </label>
+    </fieldset>
+    <fieldset> 
+            <label for="style">
+                <span> Style </span>
+                <input type= "radio" name= "findBeer" value= "style" required> 
+            </label>
+    </fieldset>
+    <button type= "submit"> Click the button in the middle if you see more than one. </button>
+</form> 
