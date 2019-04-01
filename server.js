@@ -41,7 +41,7 @@ app.use('*', (req, res) => errorHandler({status:404}, 'You have reached a page t
 
 //route callback functions
 function mainPage(req, res) {
-  res.render('./index');
+  res.render('./index', {pageTitle: 'Beerly GF'});
 }
 
 //helper functions
