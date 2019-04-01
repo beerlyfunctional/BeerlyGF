@@ -1,0 +1,21 @@
+/* base is max-width 640 */
+
+.grid-container{
+  display: grid; 
+  grid-template-rows: [header] 200px [body] auto [footer] 100px;
+  grid-template-columns: [first] .5em [second] calc(200px - .5em) [third] auto [fourth] calc(200px -.5em) [end] .5em;
+  grid-template-areas: 
+  "logo logo header menu menu"
+  ". main main main ."
+  "footer footer footer footer footer"
+}
+
+
+
+@media screen and (min-width: 641px){
+
+}
+
+@media screen and (min-width: 769px){
+
+}
