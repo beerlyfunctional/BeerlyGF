@@ -34,14 +34,14 @@ app.use(methodOverride(function(req, res){
 app.listen(PORT, () => console.log(`Beerly here on PORT ${PORT}`));
 
 //server routes
-app.get('/', helloWorld);
+app.get('/', mainPage);
 
 //generic route for all incorrect access
 app.use('*', (req, res) => errorHandler({status:404}, 'You have reached a page that does not exist.', res));
 
 //route callback functions
-function helloWorld(req, res) {
-  res.send('Hello World');
+function mainPage(req, res) {
+  res.render('./index', {pageTitle: 'Beerly GF'});
 }
 
 //helper functions
