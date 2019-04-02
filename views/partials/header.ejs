@@ -1,20 +1,33 @@
 
 <header class="header">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"> </script>
         <div class="flex">
-        <!-- <img class="taps" src="/img/beer-taps-2631121_1920.jpg" alt="beer tap line background"> -->
    
         <img class="logo" src="/img/beerlyFunctional.jpg" alt="beerly functional logo">
-   
-        <nav>
+        
+        <nav id="nav">
             <img class="menu" id="menu-icon" src="/img/noun_Hops_1017735_000000.png" alt="hop menu">
-            
-            <ul>
-                <li><a href="/" class="current">Home</a></li>
-                <li><a href="/search-results">Search Results</a></li>
-                <li><a href="/brewtails">Brewtails</a></li>
-                <li><a href="/shelf">Shelf</a></li>
+            <img id="ex" class="nav-list" src="/img/noun_Exit_1267862_1A1A1A.png" alt="an X, for closing the navigation menu" style="display: none">
+            <ul class="nav-list" style="display: none">
+                <li class="nav-list" style="display: none"><a href="/" class="current">Home</a></li>
+                <li class="nav-list" style="display: none" ><a href="/search-results">Search Results</a></li>
+                <li class="nav-list" style="display: none"><a href="/brewtails">Brewtails</a></li>
+                <li class="nav-list" style="display: none"><a href="/shelf">Shelf</a></li>
             </ul>
             
+            <script> 
+           function hideTheNav() {
+               document.getElementById("#nav").classList.toggle("show");
+            }
+        
+            $('#menu-icon').on('click', function() {
+             $(".nav-list").attr("style", "display: flex; flex-direction: column")
+            });
+
+            $('#ex').on('click', function(){
+                $(".nav-list").attr("style", "display: none")
+            })
+            </script>
         </nav>
     </div>
     </header>
