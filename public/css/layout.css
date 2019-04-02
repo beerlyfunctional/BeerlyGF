@@ -32,21 +32,32 @@
   height: 20vh;
 }
 
+.search-section{
+  grid-area: main; 
+  background-color: transparent;
+}
+
+form{
+  margin:auto; 
+  width: 50vw;
+  padding: 2vw; 
+  background-color: rgb(160, 128, 92);
+  
+}
+
+.footer{
+  background-size: cover;
+  grid-area: footer;
+  background-image: url('/img/beer-taps-2631121_1920.jpg');
+  padding: auto; 
+}
+
 #menu-icon{
   display: hidden;
   height: 20vh;
   background-color: transparent;
 }
 
-
-
-.search-section{
-  grid-area: main; 
-}
-
-.footer{
-  grid-area: footer;
-}
 
 
 /* @media screen and (min-width: 421px){
