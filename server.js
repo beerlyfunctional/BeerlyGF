@@ -22,10 +22,10 @@ app.set('view engine', 'ejs');
 app.use(express.urlencoded({extended:true}));
 app.use(express.static('./public'));
 
-app.use(methodOverride(function(req, res){
-  if(req.body && typeof(req.body)=== 'object' && '_method' in req.body){
-    let method = req.body._method;
-    delete req.body._method;
+app.use(methodOverride(function(request, response){
+  if(request.body && typeof(request.body)=== 'object' && '_method' in request.body){
+    let method = request.body._method;
+    delete request.body._method;
     return method;
   }
 }))
@@ -35,9 +35,10 @@ app.listen(PORT, () => console.log(`Beerly here on PORT ${PORT}`));
 
 //server routes
 app.get('/', mainPage);
+app.post('./search-results.ejs', getBeer);
 
 //generic route for all incorrect access
-app.use('*', (req, res) => errorHandler({status:404}, 'You have reached a page that does not exist.', res));
+app.use('*', (request, response) => errorHandler({status:404}, 'You have reached a page that does not exist.', response));
 
 //route callback functions
 function mainPage(req, res) {
@@ -54,3 +55,50 @@ function errorHandler(error, message, res) {
     }
   }
 }
+
+//getting the beer data from the database or the API
+function getBeer (request, response) {
+  const selectSQL = `SELECT * FROM beers WHERE search_query=$1;`;
+  const values = [request.query.data];
+
+  client.query(selectSQL, values)
+    .then(result => {
+      if (result.rowCount > 0) {
+        response.send(result.rows[0]);
+      } else {
+        const apiURL = `https://sandbox-api.brewerydb.com/v2/beer/request.query.data.name?key=${SANDBOX_KEY}`;
+
+        superagent.get (apiURL)
+        console.log('We have gotten into Superagent function')
+          .then(apiData => {
+            if (!apiData.body.results.length) {
+              throw 'No Beer information available for your search criteria. Try another beer name or style. Bottoms up!';
+            } else {
+              let beer = new Beer (apiData.body.results[0], request.query);
+              let insertSQL = `INSERT INTO beers (name, beer_id, abv, style_name, style_id, time_stamp) VALUES ($1, $2, $3, $4, $5, $6);`;
+              let newValues = Object.values(beer);
+              client.query(insertSQL, newValues)
+                .then(sqlReturn => {
+                  beer.id = sqlReturn.rows[0].id;
+                  response.send(beer);
+                });
+            }
+          });
+      }
+    })
+    .catch(error => errorHandler (error));
+}
+
+//Coonstructor Function for beer
+function Beer(data) {
+  this.name = body.data.name;
+  this.beer_id = body.data.id;
+  this.abv = body.data.abv;
+  this.style_name = body.data.style.name;
+  this.style_id = body.data.style.id;
+  this.time_stamp = Date.now();
+}
+
+
+
+
