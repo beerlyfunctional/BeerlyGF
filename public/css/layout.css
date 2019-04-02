@@ -1,11 +1,12 @@
 /* base is max-width 640 */
 
 .grid-container{
-  width: 600px; 
+  width: 100vw;
+  height: 100vh; 
   margin: 0px auto;
   display: grid; 
-  grid-template-rows: [header] 200px [body] auto [footer] 100px;
-  grid-template-columns: [first] 20px [second] 180px [third] auto [fourth] 180px [end] 20px;
+  grid-template-rows: [header] 20vh [body] auto [footer] 10vh;
+  grid-template-columns: [first] 3vw [second] 20vw [third] auto [fourth] 20vw [end] 3vw;
   grid-template-areas: 
   "header header header header header"
   ". main main main ."
@@ -13,19 +14,22 @@
 }
 
 .header{
-  border: 1px solid;
   grid-area: header;
   background-size: cover;
   background-image: url('/img/beer-taps-2631121_1920.jpg');
+  justify-content: space-between;
 }
 
 .logo{
   border: 1px solid;
   grid-area: header [first] [seccond];
-  width: 33.3%
+  height: 20vh;
 }
 .menu{
       grid-area: header;
+      margin-left: 80vw;
+      height: 20vh;
+      background-color: transparent;
     }
 
 .search-section{
@@ -37,10 +41,10 @@
 }
 
 
-/* @media screen and (min-width: 641px){
+/* @media screen and (min-width: 421px){
 
 }
 
-@media screen and (min-width: 769px){
+@media screen and (min-width: 641px){
 
 } */
