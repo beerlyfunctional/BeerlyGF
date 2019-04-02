@@ -35,6 +35,7 @@ app.listen(PORT, () => console.log(`Beerly here on PORT ${PORT}`));
 
 //server routes
 app.get('/', mainPage);
+app.post('./search-results.ejs', getBeer);
 
 //generic route for all incorrect access
 app.use('*', (req, res) => errorHandler({status:404}, 'You have reached a page that does not exist.', res));
@@ -54,3 +55,49 @@ function errorHandler(error, message, res) {
     }
   }
 }
+
+//getting the beer data from the database or the API
+function getBeer (request, response) {
+  const selectSQL = `SELECT * FROM beers WHERE search_query=$1;`;
+  const values = [request.query.data];
+
+  client.query(selectSQL, values)
+    .then(result => {
+      if (result.rowCount > 0) {
+        response.send(result.rows[0]);
+      } else {
+        const apiURL = `https://sandbox-api.brewerydb.com/v2/beer/random?key=4a76ee02ee052f5b2e7f3174e132410f`;
+
+        superagent.get (apiURL)
+          .then(apiData => {
+            if (!apiData.body.data.length) {
+              throw 'No Beer information available for your search criteria. Try another beer name or style. Bottoms up!';
+            } else {
+              let beer = new Beer (apiData.body.data[0], request.query);
+              let insertSQL = `INSERT INTO beers (name, beer_id, abv, style_name, style_id, time_stamp) VALUES ($1, $2, $3, $4, $5, $6);`;
+              let newValues = Object.values(beer);
+              client.query(insertSQL, newValues)
+                .then(sqlReturn => {
+                  beer.id = sqlReturn.rows[0].id;
+                  response.send(beer);
+                });
+            }
+          });
+      }
+    })
+    .catch(error => errorHandler (error));
+}
+
+//Coonstructor Function for beer
+function Beer(data) {
+  this.name = body.data.name;
+  this.beer_id = body.data.id;
+  this.abv = body.data.abv;
+  this.style_name = body.data.style.name;
+  this.style_id = body.data.style.id;
+  this.time_stamp = Date.now();
+}
+
+
+
+
