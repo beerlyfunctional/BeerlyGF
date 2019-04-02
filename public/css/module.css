@@ -1,0 +1,33 @@
+/* base is max-width 640 */
+
+/*  nav menu */
+
+#nav{
+  background-color: transparent;
+}
+
+li, a {
+  width: 7vw;
+  margin: .5vw;
+  background-color: rgb(160, 128, 92);
+}
+
+ul{
+  background-color: rgb(160, 128, 92);
+}
+
+#ex{
+  flex-direction: row-reverse;
+  height: 1vw; 
+}
+
+.search-section
+
+/* @media screen and (min-width: 421px){ */
+
+/* } */
+  
+/* @media screen and (min-width: 641px){
+  
+  
+} */
