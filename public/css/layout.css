@@ -13,24 +13,32 @@
   "footer footer footer footer footer"
 }
 
-.header{
-  grid-area: header;
-  background-size: cover;
-  background-image: url('/img/beer-taps-2631121_1920.jpg');
+.flex{
+  width: 100vw; 
+  height: 20vh; 
+  display: inline-flex;
   justify-content: space-between;
+  background-color: transparent; 
 }
 
+.header{
+  background-size: cover;
+  grid-area: header;
+  background-image: url('/img/beer-taps-2631121_1920.jpg');
+}
+
+
 .logo{
-  border: 1px solid;
-  grid-area: header [first] [seccond];
+
   height: 20vh;
 }
-.menu{
-      grid-area: header;
-      margin-left: 80vw;
-      height: 20vh;
-      background-color: transparent;
-    }
+#menu-icon{
+  display: hidden;
+  height: 20vh;
+  background-color: transparent;
+}
+
+
 
 .search-section{
   grid-area: main; 
@@ -41,10 +49,15 @@
 }
 
 
-/* @media screen and (min-width: 421px){
+@media screen and (min-width: 421px){
+  #menu-icon{
+    display: inline-block; 
+  }
 
 }
 
 @media screen and (min-width: 641px){
-
-} */
+#menu-icon{
+  display: inline-block;
+}
+}

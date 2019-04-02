@@ -1,6 +1,79 @@
-/* base is max-width 640
+/* base is max-width 640 */
+
+/*  nav menu */
+
+a{
+  color: rgb(62, 47, 46);
+  text-decoration: none; 
+  font-weight: bold;
+}
+a:hover{ 
+  color: rgb(160, 128, 92); 
+}
+
+nav{
+  float: right; 
+  padding: 20px;
+  background-color: transparent;
+}
+a:hover#menu-icon {
+  background-color: rgb(62, 47, 46)
+}
+ul{ 
+  list-style: none;
+}
+
+li{
+  display: inline-block; 
+  float: left; 
+  padding: 1vw;
+}
+
+.current{
+  color: rgb(160, 128, 92);
+}
+nav ul, nav:active ul{
+  display: none; 
+  position: absolute; 
+  padding: 20px; 
+  /* background */
+  border: 5px solid rgb(35, 26, 19);
+}
+
+nav li{
+  text-align: center; 
+  width: 100%; 
+  padding: 1vw 0; 
+  margin: 0; 
+}
+
+nav:hover ul{
+  display: block;
+}
+  
+
+
+
 @media screen and (min-width: 421px){
 
+nav ul, nav:active ul{
+  display: none; 
+  position: absolute; 
+  padding: 20px; 
+  /* background */
+  border: 5px solid rgb(35, 26, 19);
+}
+
+nav li{
+  text-align: center; 
+  width: 100%; 
+  padding: 1vw 0; 
+  margin: 0; 
+}
+
+nav:hover ul{
+  display: block;
+}
   
 
 
@@ -16,5 +89,24 @@
 }
 
 @media screen and (min-width: 641px){
-
-} */
+  nav ul, nav:active ul{
+    display: none; 
+    position: absolute; 
+    padding: 20px; 
+    /* background */
+    border: 5px solid rgb(35, 26, 19);
+  }
+  
+  nav li{
+    text-align: center; 
+    width: 100%; 
+    padding: 1vw 0; 
+    margin: 0; 
+  }
+  
+  nav:hover ul{
+    display: block;
+  }
+    
+  
+}
