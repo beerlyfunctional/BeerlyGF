@@ -27,6 +27,8 @@ function Brewery(input) {
   this.brewery = input.name;
   this.website = input.website ? input.website : null;
   this.image = input.images ? input.images.squareMedium.replace(/http:\/\//i, 'https://') : '/img/alcohol-alcoholic-beer-1161466.jpg';
+  this.lat = input.latitude;
+  this.long = input.longitude;
   this.time_stamp = Date.now();
 }
 

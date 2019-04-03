@@ -91,7 +91,16 @@ function fetch_lat_long(city){
 }
 
 
-
+const brewerySeed = require('./data/breweries-seattle.json').data;
+        brewerySeed.filter(brewery => brewery.openToPublic === 'Y')
+          .forEach(element => {
+            let brewery = new constructor.Brewery(element)
+            brewery.location_id = location.id;
+            let sql = `INSERT INTO breweries(id, brewery, website, image, lat, long, time_stamp, location_id) VALUES($1,$2,$3,$4,$5,$6,$7,$8);`;
+            let values = Object.values(brewery);
+            client.query(sql, values);
+            console.log('🍺 Insert Complete', brewery);
+          });
 
 
 

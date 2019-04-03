@@ -36,8 +36,11 @@ function search(request, response) {
         console.log('info from db w/o api call', result.rows);
         location = result.rows[0];
 
-      }
-      else {
+        let sql = `SELECT * FROM breweries WHERE location_id = $1;`;
+
+        let values = [location.id];
+
+      } else {
         const url = `https://maps.googleapis.com/maps/api/geocode/json?key=${process.env.GOOGLE_API_KEY}&address=${city}`;
         superagent.get(url)
           .then(data => {
@@ -55,6 +58,8 @@ function search(request, response) {
                 })
                 .catch(error => errorHandler(error));
             }
+
+
 
           })
           .catch(error => errorHandler(error));

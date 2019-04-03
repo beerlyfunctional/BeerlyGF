@@ -1,6 +1,6 @@
 DROP TABLE IF EXISTS beers; 
-DROP TABLE IF EXISTS breweries;
 DROP TABLE IF EXISTS styles;
+DROP TABLE IF EXISTS breweries;
 DROP TABLE IF EXISTS locations;
 
 CREATE TABLE IF NOT EXISTS locations(
@@ -15,7 +15,11 @@ CREATE TABLE IF NOT EXISTS breweries(
   brewery VARCHAR(255), -- name of brewery
   website VARCHAR(255),
   image VARCHAR(511),
-  time_stamp NUMERIC(35)
+  lat NUMERIC (16,14),
+  long NUMERIC (17,14),
+  time_stamp NUMERIC(35),
+  location_id int NOT NULL, 
+  FOREIGN KEY(location_id) REFERENCES locations(id)
 );
 
 CREATE TABLE IF NOT EXISTS styles(
