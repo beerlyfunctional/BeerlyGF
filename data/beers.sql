@@ -1,6 +1,14 @@
 DROP TABLE IF EXISTS beers; 
 DROP TABLE IF EXISTS breweries;
 DROP TABLE IF EXISTS styles;
+DROP TABLE IF EXISTS locations;
+
+CREATE TABLE IF NOT EXISTS locations(
+  id SERIAL PRIMARY KEY,
+  zip VARCHAR(127),
+  lat NUMERIC (16,14),
+  long NUMERIC (17,14)
+);
 
 CREATE TABLE IF NOT EXISTS breweries(
   id VARCHAR(32) PRIMARY KEY,  -- pulled from API data
