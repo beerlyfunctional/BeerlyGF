@@ -58,11 +58,13 @@ function errorHandler(error, message, res) {
 
 //getting the beer data from the database or the API
 function getBeer (request, response) {
-  const selectSQL = `SELECT * FROM beers WHERE search_query=$1;`;
+  console.log('in get beer function!!!');
+  const selectSQL = `SELECT * FROM beers WHERE style_name=$1;`;
   const values = [request.query.data];
 
   client.query(selectSQL, values)
     .then(result => {
+      console.log(result);
       if (result.rowCount > 0) {
         response.send(result.rows[0]);
       } else {
