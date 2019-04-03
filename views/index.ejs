@@ -9,6 +9,14 @@
     
 <main class="search-section"> 
     <%- include('./partials/search.ejs') %>
+    <!-- hard coded search -->
+
+    <div id="form-div">
+        <form action= "/search-results" method= "POST">
+            <input id="search-bar" type= "text" name= "findBeer" placeholder=" Search by zip" required>
+            <div id="button"><button  type= "submit">Search</button></div>
+        </form> 
+    </div>
 </main>
 
     <%- include('./partials/footer.ejs') %>
