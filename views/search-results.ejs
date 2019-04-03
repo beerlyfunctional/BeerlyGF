@@ -9,7 +9,12 @@
 <body>
     <%- include('./partials/header') -%>
 
-    <%- include('./partials/searchResultFormat') -%>
+    <!-- google maps pulled based on zip -->
+    <!-- zoom of 12 is multi-neighborhood view -->
+    <div id="map"></div>
+
+
+    <%- include('./brewerySearchResults.ejs') -%> 
 
     <%- include('./partials/footer') -%>
 </body>
