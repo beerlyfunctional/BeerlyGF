@@ -1,4 +1,4 @@
-/* 
+/*
 
   //getting the beer data from the database or the API
 
@@ -85,7 +85,7 @@ function fetch_lat_long(city){
         }
 
       }
-      
+
     })
     .catch(error => errorHandler(error));
 }
