@@ -4,7 +4,6 @@
 const express = require('express');
 
 const methodOverride = require('method-override');
-const pg = require('pg');
 require('dotenv').config();
 
 const helpers = require('./helpers.js');
@@ -35,10 +34,10 @@ app.listen(PORT, () => console.log(`Beerly here on PORT ${PORT}`));
 
 //server routes
 app.get('/', mainPage);
-app.post('/search', helpers.getBeer);
+app.post('/search', helpers.search);
 
 //generic route for all incorrect access
-app.use('*', (req, res) => errorHandler({status:404}, 'You have reached a page that does not exist.', res));
+app.use('*', (req, res) => helpers.errorHandler({status:404}, 'You have reached a page that does not exist.', res));
 
 //route callback functions
 function mainPage(req, res) {
