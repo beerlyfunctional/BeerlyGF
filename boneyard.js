@@ -63,4 +63,36 @@
 
 
 
+//fetch lat long
+function fetch_lat_long(city){
+  const url = `https://maps.googleapis.com/maps/api/geocode/json?key=${process.env.GOOGLE_API_KEY}&address=${city}`;
+  console.log(url);
+  superagent.get(url)
+    .then(data => {
+      console.log('🗺 from the googs');
+      if(!data.body.results.length) throw 'Where are we??? Nothing back from GeoCodeAPI';
+
+      else{
+        let location = new constructor.Location(data.body.results[0].geometry.location, city);
+
+        let sql = `INSERT INTO locations(zip, lat, lng) VALUES($1, $2, $3) RETURNING *;`;
+        let values = Object.values(location);
+        try {
+          return client.query(sql, values);
+        }
+        catch (error) {
+          errorHandler(error);
+        }
+
+      }
+      
+    })
+    .catch(error => errorHandler(error));
+}
+
+
+
+
+
+
 */

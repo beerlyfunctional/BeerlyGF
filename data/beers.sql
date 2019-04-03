@@ -5,7 +5,7 @@ DROP TABLE IF EXISTS locations;
 
 CREATE TABLE IF NOT EXISTS locations(
   id SERIAL PRIMARY KEY,
-  zip VARCHAR(127),
+  search_query VARCHAR(127),
   lat NUMERIC (16,14),
   long NUMERIC (17,14)
 );
