@@ -35,7 +35,7 @@ app.listen(PORT, () => console.log(`Beerly here on PORT ${PORT}`));
 
 //server routes
 app.get('/', mainPage);
-app.post('./search-results.ejs', getBeer);
+app.post('/search-results', getBeer);
 
 //generic route for all incorrect access
 app.use('*', (req, res) => errorHandler({status:404}, 'You have reached a page that does not exist.', res));
@@ -66,7 +66,7 @@ function getBeer (request, response) {
       if (result.rowCount > 0) {
         response.send(result.rows[0]);
       } else {
-        const apiURL = `https://sandbox-api.brewerydb.com/v2/beer/random?key=4a76ee02ee052f5b2e7f3174e132410f`;
+        const apiURL = `https://sandbox-api.brewerydb.com/v2/beer/random?key=${process.env.API_KEY}`;
 
         superagent.get (apiURL)
           .then(apiData => {
