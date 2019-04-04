@@ -258,15 +258,19 @@ function seed(req, res) {
         return thisStyle;
       });
 
-      const beerSeed = require('./data/ale.json').data;
-      const beerArray = beerSeed.map(element => {
-        let beer = new constructor.Beer(element);
-        let sql = `INSERT INTO beers(name, beer_id, abv, ibu, time_stamp, style_id, brewery_id) VALUES($1,$2,$3,$4,$5,$6,$7) ON CONFLICT DO NOTHING;`;
-        let values = Object.values(beer);
-        console.log(beer.brewery_id);
-        client.query(sql, values).catch(error => errorHandler(error));
-        console.log('🍺 Insert Complete', beer);
-        return beer;
+      let beerArray, beerSeed;
+      breweryArray.forEach(brewery => {
+        console.log(brewery);
+        // beerSeed = require(`./data/D1UQzj.json`).data;
+        // beerArray = beerSeed.map(element => {
+        //   let beer = new constructor.Beer(element, brewery.id);
+        //   let sql = `INSERT INTO beers(name, beer_id, abv, ibu, time_stamp, style_id, brewery_id) VALUES($1,$2,$3,$4,$5,$6,$7) ON CONFLICT DO NOTHING;`;
+        //   let values = Object.values(beer);
+        //   console.log(beer.brewery_id);
+        //   client.query(sql, values).catch(error => errorHandler(error));
+        //   console.log('🍺 Insert Complete', beer);
+        //   return beer;
+        // });
       });
       res.render('pages/datadisplay', { breweries: breweryArray, styles: styleArray, beers: beerArray });
     })

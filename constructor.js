@@ -1,13 +1,13 @@
 
 //Constructor Function for beer
-function Beer(input) {
+function Beer(input, brewery_id) {
   this.name = input.name;
   this.beer_id = input.id;
   this.abv = input.abv ? input.abv : null;
   this.ibu = input.ibu ? input.ibu : null;
   this.time_stamp = Date.now();
   this.style_id = input.style.id;
-  this.brewery_id = input.breweries[0].id;
+  this.brewery_id = brewery_id;
 }
 
 function Style(input) {
