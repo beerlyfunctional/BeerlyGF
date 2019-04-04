@@ -81,3 +81,5 @@ Picture Sources:
 Header & Footer Background: https://pixabay.com/photos/beer-taps-bar-brews-craft-booze-2631121/
 
 Beer search stock image: https://www.pexels.com/photo/clear-glass-filled-with-beer-1161466/
+
+Group Cheers image: https://www.pexels.com/photo/grayscale-photo-of-people-cheers-glasses-1464825/
