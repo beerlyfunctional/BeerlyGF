@@ -233,7 +233,7 @@ function beers(request, response) {
   let sql = `SELECT * FROM beers WHERE id=$1;`;
 
   client.query(sql [request.params.beer_id]).then(beer => {
-    return response.render('./PlaceHolderPage.ejs', {beer: beer.rows});
+    return response.render('./PlaceHolderPage.ejs', {beer: beer.rows[0]});
   }).catch(error => errorHandler(error));
 }
 // from API: if (!breweryApiResults.body.data) this is when no beers from API
@@ -259,7 +259,7 @@ function removeReview(request, response){
   let values = [request.params.id];
 
   return client.query(SQL, values)
-    .then(response.recirect('/beers/:beer_id'))
+    .then(response.redirect('/beers/:beer_id'))
     .catch(error => errorHandler(error));
 
 }
