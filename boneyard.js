@@ -1,4 +1,4 @@
-/* 
+/*
 
   //getting the beer data from the database or the API
 
@@ -85,14 +85,24 @@ function fetch_lat_long(city){
         }
 
       }
-      
+
     })
     .catch(error => errorHandler(error));
 }
 
 
+const brewerySeed = require('./data/breweries-seattle.json').data;
+        brewerySeed.filter(brewery => brewery.openToPublic === 'Y')
+          .forEach(element => {
+            let brewery = new constructor.Brewery(element)
+            brewery.location_id = location.id;
+            let sql = `INSERT INTO breweries(id, brewery, website, image, lat, long, time_stamp, location_id) VALUES($1,$2,$3,$4,$5,$6,$7,$8);`;
+            let values = Object.values(brewery);
+            client.query(sql, values);
+            console.log('🍺 Insert Complete', brewery);
+          });
 
-
-
+let sql = `SELECT * FROM beers WHERE brewery_id = $1;`;
+              let values = [brewery_id]
 
 */
