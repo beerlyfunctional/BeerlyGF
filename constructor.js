@@ -42,6 +42,7 @@ function Review(input) {
   this.note = input.note !== '' ? input.note : '';
   this.rating = input.rating !== 0 ? input.rating : 0;
   this.time_stamp = Date.now();
+  this.gf = input.gf;
 }
 
 module.exports = {Beer, Style, Brewery, Location, Review};

@@ -111,36 +111,36 @@ function search(request, response) {
 
                   let sql = `SELECT * FROM breweries WHERE location_id = $1;`;
                   let values = [location.id];
-          
+
                   client
                     .query(sql, values)
                     .then(breweryResults => {
-          
+
                       if (breweryResults.rowCount > 0) {
-          
+
                         breweries = breweryResults.rows;
                         console.log(breweries, 'breweries from DB 🐨');
                         response.send(location);
-          
+
                       } else { // get breweries from API
-          
+
                         const url = `https://sandbox-api.brewerydb.com/v2/search/geo/point?lat=${location.lat}&lng=${location.long}&key=${process.env.BREWERYDB_API_KEY}&radius=20`;
-          
+
                         superagent.get(url)
                           .then(breweryResults => {
                             if (!breweryResults.body.data) {
-                              errorHandler({status:404}, 'No data from brewerydb', response);
+                              errorHandler({ status: 404 }, 'No data from brewerydb', response);
                             }
                             breweries = breweryResults.body.data.map(breweryData => {
                               let brewery = new constructor.Brewery(breweryData);
-          
+
                               let sql = `INSERT INTO breweries(id, brewery, website, image, lat, long, time_stamp) VALUES($1, $2, $3, $4, $5, $6, $7) ON CONFLICT DO NOTHING;`;
                               let values = Object.values(brewery);
-          
+
                               client.query(sql, values)
                                 .catch(error => errorHandler(error));
                               console.log(`brewery ${brewery.id} added to db`);
-          
+
                               sql = `SELECT * FROM breweries WHERE id=$1;`;
                               values = Object.values(brewery.id);
                               client.query(sql, values)
@@ -176,11 +176,11 @@ function breweries(request, response) {
   let beersql = `SELECT * FROM beers WHERE brewery_id=$1;`;
 
   client.query(sql, [request.params.brewery_id]).then(breweryResult => {
-    client.query(beersql, [request.params.brewery_id]).then(beerResult =>{
-      if(breweryResult.rows.length < 1){
-        return response.render('./pages/error.ejs', {message: 'I am so sorry, this brewery was not found.'})
+    client.query(beersql, [request.params.brewery_id]).then(beerResult => {
+      if (breweryResult.rows.length < 1) {
+        return response.render('./pages/error.ejs', { message: 'I am so sorry, this brewery was not found.' })
       }
-      return response.render('./MKCbreweries.ejs', {brewery: breweryResult.rows[0], beers: beerResult.rows});
+      return response.render('./MKCbreweries.ejs', { brewery: breweryResult.rows[0], beers: beerResult.rows });
     }).catch(error => errorHandler(error));
   }).catch(error => errorHandler(error));
 }
@@ -189,8 +189,8 @@ function breweries(request, response) {
 function beers(request, response) {
   let sql = `SELECT * FROM beers WHERE id=$1;`;
 
-  client.query(sql [request.params.beer_id]).then(beer => {
-    return response.render('./PlaceHolderPage.ejs', {beer: beer.rows});
+  client.query(sql[request.params.beer_id]).then(beer => {
+    return response.render('./PlaceHolderPage.ejs', { beer: beer.rows });
   }).catch(error => errorHandler(error));
 }
 
@@ -207,6 +207,7 @@ function seed(req, res) {
       console.log('result found');
       location = result.rows[0];
 
+      const brewerySeed = require('./data/breweries-seattle.json').data;
       const breweryArray = brewerySeed
         .filter(brewery => brewery.openToPublic === 'Y')
         .map(element => {
@@ -246,6 +247,5 @@ function seed(req, res) {
     })
     .catch(error => errorHandler(error));
 
-  const brewerySeed = require('./data/breweries-seattle.json').data;
 }
 module.exports = { search, errorHandler, breweries, beers, seed };
