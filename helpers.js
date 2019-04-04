@@ -172,14 +172,16 @@ function search(request, response) {
 function getBreweriesWeWantToRender(breweryApiResults) {
   //every brewery on the map needs to have beers avaliable
 
-let url = ;
+let url = `https://api.brewerydb.com/v2/brewery/${brewery.id}/beers?key=${BREWERYDB_API_KEY};`
 let breweryArray = [];
 
-breweryApiResults.forEach(gotBeer(brewery) => {
+breweryApiResults.forEach(brewery => {
   superagent.get(url)
-  .then(eachBeer => {
-
-  })
+    .then( beers => {
+    if(beers.body.data){
+      breweryArray.push(brewery);
+    }
+  }).catch(error => errorHandler(error))
 })
 
 
