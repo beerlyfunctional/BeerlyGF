@@ -42,7 +42,7 @@ app.post('/beers/:beer_id', helpers.review);
 app.delete('/beers/:beer_id', helpers.removeReview);
 
 //generic route for all incorrect access
-app.use('*', (req, res) => helpers.errorHandler({status:404}, 'You have reached a page that does not exist.', res));
+app.use('*', (req, res) => helpers.errorHandler({status: 404, line: 45, server: true}, 'You have reached a page that does not exist.', res));
 
 //route callback functions
 function mainPage(req, res) {

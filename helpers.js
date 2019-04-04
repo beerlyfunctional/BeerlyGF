@@ -61,7 +61,7 @@ function search(request, response) {
                 .then(breweryResults => {
                   // console.log('in superagent');
                   if (!breweryResults.body.data) {
-                    return errorHandler({ status: 404 }, 'No data from brewerydb', response);
+                    return errorHandler({ status: 404, line: 64 }, 'No data from brewerydb', response);
                   }
                   breweries = breweryResults.body.data.map(breweryData => {
                     let brewery = new constructor.Brewery(breweryData);
@@ -97,7 +97,7 @@ function search(request, response) {
 
             // console.log('🗺 from the googs');
             if (!data.body.results.length) {
-              errorHandler({ status: 404 }, 'Google API not returning any data. Please check your input', response);
+              errorHandler({ status: 404, line: 100 }, 'Google API not returning any data. Please check your input', response);
               throw 'Where are we??? Nothing back from GeoCodeAPI';
             } else {
 
@@ -130,7 +130,7 @@ function search(request, response) {
                         superagent.get(url)
                           .then(breweryResults => {
                             if (!breweryResults.body.data) {
-                              errorHandler({status:404}, 'No data from brewerydb', response);
+                              errorHandler({status: 404, line: 133}, 'No data from brewerydb', response);
                             }
                             breweries = breweryResults.body.data.map(breweryData => {
                               let brewery = new constructor.Brewery(breweryData);
