@@ -31,7 +31,6 @@ function search(request, response) {
   client
     .query(sql, values)
     .then(locationResult => {
-
       if (locationResult.rowCount > 0) {
         //transfer control over to map function -> which will do the rendering
         console.log('info from db w/o api call', locationResult.rows);
@@ -43,18 +42,18 @@ function search(request, response) {
         client
           .query(sql, values)
           .then(breweryResults => {
-
             if (breweryResults.rowCount > 0) {
-
               breweries = breweryResults.rows;
               console.log(breweries, 'breweries from DB 🐨');
+              // THis is where the data gets sent back tothe front end. IT might work elsewhere, but this works for now.
               response.send(location);
+            } else {
+              // get breweries from API
 
-            } else { // get breweries from API
+              const url = `https://sandbox-api.brewerydb.com/v2/search/geo/point?lat=${location.lat}&lng=${location.long}&key=${ process.env.BREWERYDB_API_KEY }&radius=20`;
 
-              const url = `https://sandbox-api.brewerydb.com/v2/search/geo/point?lat=${location.lat}&lng=${location.long}&key=${process.env.BREWERYDB_API_KEY}&radius=20`;
-
-              superagent.get(url)
+              superagent
+                .get(url)
                 .then(breweryResults => {
                   if (!breweryResults.body.data) {
                     errorHandler({ status: 404 }, 'No data from brewerydb', response);
@@ -65,26 +64,26 @@ function search(request, response) {
                     let sql = `INSERT INTO breweries(id, brewery, website, image, lat, long, time_stamp) VALUES($1, $2, $3, $4, $5, $6, $7) ON CONFLICT DO NOTHING;`;
                     let values = Object.values(brewery);
 
-                    client.query(sql, values)
-                      .catch(error => errorHandler(error));
+                    client.query(sql, values).catch(error => errorHandler(error));
                     console.log(`brewery ${brewery.id} added to db`);
 
                     sql = `SELECT * FROM breweries WHERE id=$1;`;
                     values = Object.values(brewery.id);
-                    client.query(sql, values)
+                    client
+                      .query(sql, values)
                       .then(breweryQueryResult => {
                         // this is where the brewery gets returned for the map method
                         return breweryQueryResult.rows[0];
                       })
                       .catch(error => errorHandler(error));
                   });
+                  // THis is where the data gets sent back tothe front end. IT might work elsewhere, but this works for now.
                   response.send(location);
                 })
                 .catch(error => errorHandler(error));
             }
           })
           .catch(error => errorHandler(error));
-
       } else {
         console.log('No SQL result, going to geocode API');
         const url = `https://maps.googleapis.com/maps/api/geocode/json?key=${process.env.GOOGLE_API_KEY}&address=${city}`;
@@ -92,13 +91,11 @@ function search(request, response) {
         superagent
           .get(url)
           .then(data => {
-
             console.log('🗺 from the googs');
             if (!data.body.results.length) {
               errorHandler({ status: 404 }, 'Google API not returning any data. Please check your input', response);
               throw 'Where are we??? Nothing back from GeoCodeAPI';
             } else {
-
               location = new constructor.Location(data.body.results[0].geometry.location, city);
 
               let sql = `INSERT INTO locations(search_query, lat, long) VALUES($1, $2, $3) RETURNING *;`;
@@ -115,18 +112,18 @@ function search(request, response) {
                   client
                     .query(sql, values)
                     .then(breweryResults => {
-
                       if (breweryResults.rowCount > 0) {
-
                         breweries = breweryResults.rows;
                         console.log(breweries, 'breweries from DB 🐨');
+                        // THis is where the data gets sent back tothe front end. IT might work elsewhere, but this works for now.
                         response.send(location);
+                      } else {
+                        // get breweries from API
 
-                      } else { // get breweries from API
+                        const url = `https://sandbox-api.brewerydb.com/v2/search/geo/point?lat=${location.lat}&lng=${location.long}&key=${ process.env.BREWERYDB_API_KEY }&radius=20`;
 
-                        const url = `https://sandbox-api.brewerydb.com/v2/search/geo/point?lat=${location.lat}&lng=${location.long}&key=${process.env.BREWERYDB_API_KEY}&radius=20`;
-
-                        superagent.get(url)
+                        superagent
+                          .get(url)
                           .then(breweryResults => {
                             if (!breweryResults.body.data) {
                               errorHandler({ status: 404 }, 'No data from brewerydb', response);
@@ -137,13 +134,13 @@ function search(request, response) {
                               let sql = `INSERT INTO breweries(id, brewery, website, image, lat, long, time_stamp) VALUES($1, $2, $3, $4, $5, $6, $7) ON CONFLICT DO NOTHING;`;
                               let values = Object.values(brewery);
 
-                              client.query(sql, values)
-                                .catch(error => errorHandler(error));
+                              client.query(sql, values).catch(error => errorHandler(error));
                               console.log(`brewery ${brewery.id} added to db`);
 
                               sql = `SELECT * FROM breweries WHERE id=$1;`;
                               values = Object.values(brewery.id);
-                              client.query(sql, values)
+                              client
+                                .query(sql, values)
                                 .then(breweryQueryResult => {
                                   // this is where the brewery gets returned for the map method
                                   return breweryQueryResult.rows[0];
@@ -175,14 +172,20 @@ function breweries(request, response) {
   let sql = `SELECT * FROM breweries WHERE id=$1;`;
   let beersql = `SELECT * FROM beers WHERE brewery_id=$1;`;
 
-  client.query(sql, [request.params.brewery_id]).then(breweryResult => {
-    client.query(beersql, [request.params.brewery_id]).then(beerResult => {
-      if (breweryResult.rows.length < 1) {
-        return response.render('./pages/error.ejs', { message: 'I am so sorry, this brewery was not found.' })
-      }
-      return response.render('./MKCbreweries.ejs', { brewery: breweryResult.rows[0], beers: beerResult.rows });
-    }).catch(error => errorHandler(error));
-  }).catch(error => errorHandler(error));
+  client
+    .query(sql, [request.params.brewery_id])
+    .then(breweryResult => {
+      client
+        .query(beersql, [request.params.brewery_id])
+        .then(beerResult => {
+          if (breweryResult.rows.length < 1) {
+            return response.render('./pages/error.ejs', { message: 'I am so sorry, this brewery was not found.' });
+          }
+          return response.render('./MKCbreweries.ejs', { brewery: breweryResult.rows[0], beers: beerResult.rows });
+        })
+        .catch(error => errorHandler(error));
+    })
+    .catch(error => errorHandler(error));
 }
 
 //fetch a single beer's details
@@ -240,8 +243,7 @@ function seed(req, res) {
           brewery.location_id = location.id;
           let sql = `INSERT INTO breweries(id, brewery, website, image, lat, long, time_stamp, location_id) VALUES($1,$2,$3,$4,$5,$6,$7,$8) ON CONFLICT DO NOTHING;`;
           let values = Object.values(brewery);
-          client.query(sql, values)
-            .catch(error => errorHandler(error));
+          client.query(sql, values).catch(error => errorHandler(error));
           console.log('🍺 Insert Complete');
           return brewery;
         });
@@ -251,8 +253,7 @@ function seed(req, res) {
         let thisStyle = new constructor.Style(style);
         let sql = `INSERT INTO styles(id, name, description, abvmin, abvmax, ibumin, ibumax, time_stamp) VALUES ($1,$2,$3,$4,$5,$6,$7,$8) ON CONFLICT DO NOTHING;`;
         let values = Object.values(thisStyle);
-        client.query(sql, values)
-          .catch(error => errorHandler(error));
+        client.query(sql, values).catch(error => errorHandler(error));
         console.log('Style Insert Complete');
         return thisStyle;
       });
@@ -263,14 +264,12 @@ function seed(req, res) {
         let sql = `INSERT INTO beers(name, beer_id, abv, ibu, time_stamp, style_id, brewery_id) VALUES($1,$2,$3,$4,$5,$6,$7) ON CONFLICT DO NOTHING;`;
         let values = Object.values(beer);
         console.log(beer.brewery_id);
-        client.query(sql, values)
-          .catch(error => errorHandler(error));
+        client.query(sql, values).catch(error => errorHandler(error));
         console.log('🍺 Insert Complete', beer);
         return beer;
       });
       res.render('pages/datadisplay', { breweries: breweryArray, styles: styleArray, beers: beerArray });
     })
     .catch(error => errorHandler(error));
-
 }
 module.exports = {search, errorHandler, breweries, beers, seed, review, removeReview};

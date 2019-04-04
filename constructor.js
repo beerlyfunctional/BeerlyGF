@@ -22,7 +22,7 @@ function Style(input) {
 }
 
 function Brewery(input) {
-  this.id = input.id;
+  this.id = input.breweryId;
   this.brewery = input.brewery.name;
   this.website = input.brewery.website ? input.brewery.website : '';
   this.image = input.brewery.images ? input.brewery.images.squareMedium.replace(/http:\/\//i, 'https://') : '/img/alcohol-alcoholic-beer-1161466.jpg';
