@@ -19,9 +19,91 @@ function errorHandler(error, message, res) {
   }
 }
 
-function breweries(request, response) {}
+// Search function
+function search(request, response) {
+  // check database to see if data is in DB
+  let city = request.body.findBeer[0];
+  let values = [city];
+  let sql = `SELECT * FROM locations WHERE search_query=$1;`;
 
+  let location;
+  let breweries;
+  let beer_by_brewery_array;
+
+  client
+    .query(sql, values)
+    .then(result => {
+      if (result.rowCount > 0) {
+      //transfer control over to map function -> which will do the rendering
+        console.log('info from db w/o api call', result.rows);
+        location = result.rows[0];
+
+        let sql = `SELECT * FROM breweries WHERE location_id = $1;`;
+        let values = [location.id];
+
+        client
+          .query(sql, values)
+          .then(breweryResults => {
+            if (breweryResults.rowCount > 0) {
+              breweries = breweryResults.rows;
+              response.send(breweries);
+              console.log(breweries, 'breweries from DB 🐨');
+            }
+          })
+          .catch(error => errorHandler(error));
+      } else {
+        console.log('No SQL result, going to geocode API');
+        const url = `https://maps.googleapis.com/maps/api/geocode/json?key=${process.env.GOOGLE_API_KEY}&address=${city}`;
+        superagent
+          .get(url)
+          .then(data => {
+            console.log('🗺 from the googs');
+            if (!data.body.results.length) {
+              errorHandler({ status: 404 }, 'Google API appears to be down', response);
+              throw 'Where are we??? Nothing back from GeoCodeAPI';
+            } else {
+              location = new constructor.Location(data.body.results[0].geometry.location, city);
+
+              let sql = `INSERT INTO locations(search_query, lat, long) VALUES($1, $2, $3) ON CONFLICT DO UPDATE RETURNING *;`;
+              let values = Object.values(location);
+              client
+                .query(sql, values)
+                .then(locationResult => {
+                  location = locationResult.rows[0];
+                  // with location object, query for breweries
+
+                  //
+                })
+                .catch(error => errorHandler(error));
+            }
+          })
+          .catch(error => errorHandler(error));
+      }
+    })
+    .catch(error => errorHandler(error));
+}
+
+//render map
+
+//fetch breweries and their beer list
+function breweries(request, response) {
+  let sql = `SELECT * FROM breweries WHERE id=$1;`;
+  let beersql = `SELECT * FROM beers WHERE brewery_id=$1;`;
+
+  client.query(sql, [request.params.brewery_id]).then(breweryResult => {
+    client.query(beersql, [request.params.brewery_id]).then(beerResult =>{
+      if(breweryResult.rows.length < 1){
+        return response.render('./pages/error.ejs', {message: 'I am so sorry, this brewery was not found.'})
+      }
+      return response.render('./MKCbreweries.ejs', {brewery: breweryResult.rows[0], beers: beerResult.rows});
+    }).catch(error => errorHandler(error));
+  }).catch(error => errorHandler(error));
+}
+
+//fetch a single beer's details
 function beers(request, response) {}
+
+//database seeding
 
 function seed(req, res) {
   let location;
@@ -75,75 +157,4 @@ function seed(req, res) {
 
   const brewerySeed = require('./data/breweries-seattle.json').data;
 }
-
-// Search function
-function search(request, response) {
-  // check database to see if data is in DB
-  let city = request.body.findBeer[0];
-  let values = [city];
-  let sql = `SELECT * FROM locations WHERE search_query=$1;`;
-
-  let location;
-  let breweries;
-  let beer_by_brewery_array;
-
-  client
-    .query(sql, values)
-    .then(result => {
-      if (result.rowCount > 0) {
-        //transfer control over to map function -> which will do the rendering
-        console.log('info from db w/o api call', result.rows);
-        location = result.rows[0];
-
-        let sql = `SELECT * FROM breweries WHERE location_id = $1;`;
-        let values = [location.id];
-
-        client
-          .query(sql, values)
-          .then(breweryResults => {
-            if (breweryResults.rowCount > 0) {
-              breweries = breweryResults.rows;
-              response.send(breweries);
-              console.log(breweries, 'breweries from DB 🐨');
-            }
-          })
-          .catch(error => errorHandler(error));
-      } else {
-        console.log('No SQL result, going to geocode API');
-        const url = `https://maps.googleapis.com/maps/api/geocode/json?key=${process.env.GOOGLE_API_KEY}&address=${city}`;
-        superagent
-          .get(url)
-          .then(data => {
-            console.log('🗺 from the googs');
-            if (!data.body.results.length) {
-              errorHandler({ status: 404 }, 'Google API appears to be down', response);
-              throw 'Where are we??? Nothing back from GeoCodeAPI';
-            } else {
-              location = new constructor.Location(data.body.results[0].geometry.location, city);
-
-              let sql = `INSERT INTO locations(search_query, lat, long) VALUES($1, $2, $3) ON CONFLICT DO UPDATE RETURNING *;`;
-              let values = Object.values(location);
-              client
-                .query(sql, values)
-                .then(locationResult => {
-                  location = locationResult.rows[0];
-                  // with location object, query for breweries
-
-                  //
-                })
-                .catch(error => errorHandler(error));
-            }
-          })
-          .catch(error => errorHandler(error));
-      }
-    })
-    .catch(error => errorHandler(error));
-}
-
-//render map
-
-//fetch breweries
-
-//fetch all beers from a single brewery
-
 module.exports = { search, errorHandler, breweries, beers, seed };
