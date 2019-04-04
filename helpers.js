@@ -186,7 +186,13 @@ function breweries(request, response) {
 }
 
 //fetch a single beer's details
-function beers(request, response) {}
+function beers(request, response) {
+  let sql = `SELECT * FROM beers WHERE id=$1;`;
+
+  client.query(sql [request.params.beer_id]).then(beer => {
+    return response.render('./PlaceHolderPage.ejs', {beer: beer.rows});
+  }).catch(error => errorHandler(error));
+}
 
 //database seeding
 
