@@ -111,21 +111,21 @@ function search(request, response) {
 
                   let sql = `SELECT * FROM breweries WHERE location_id = $1;`;
                   let values = [location.id];
-          
+
                   client
                     .query(sql, values)
                     .then(breweryResults => {
-          
+
                       if (breweryResults.rowCount > 0) {
-          
+
                         breweries = breweryResults.rows;
                         console.log(breweries, 'breweries from DB 🐨');
                         response.send(location);
-          
+
                       } else { // get breweries from API
-          
+
                         const url = `https://sandbox-api.brewerydb.com/v2/search/geo/point?lat=${location.lat}&lng=${location.long}&key=${process.env.BREWERYDB_API_KEY}&radius=20`;
-          
+
                         superagent.get(url)
                           .then(breweryResults => {
                             if (!breweryResults.body.data) {
@@ -133,14 +133,14 @@ function search(request, response) {
                             }
                             breweries = breweryResults.body.data.map(breweryData => {
                               let brewery = new constructor.Brewery(breweryData);
-          
+
                               let sql = `INSERT INTO breweries(id, brewery, website, image, lat, long, time_stamp) VALUES($1, $2, $3, $4, $5, $6, $7) ON CONFLICT DO NOTHING;`;
                               let values = Object.values(brewery);
-          
+
                               client.query(sql, values)
                                 .catch(error => errorHandler(error));
                               console.log(`brewery ${brewery.id} added to db`);
-          
+
                               sql = `SELECT * FROM breweries WHERE id=$1;`;
                               values = Object.values(brewery.id);
                               client.query(sql, values)
@@ -169,6 +169,49 @@ function search(request, response) {
 }
 
 //render map
+function getBreweriesWeWantToRender(request, response) {
+  //every brewery on the map needs to have beers avaliable
+
+  let sql = `SELECT * FROM breweries WHERE location_id=$1;`;
+  let values = [location.id]
+
+  client.query(sql, values)
+    .then(cachedBreweries => {
+      if (cachedBreweries.rowCount > 0){
+        //check db/api for beers
+        let sql = `SELECT * FROM beers WHERE brewery_id=$1;`;
+        let values = [brewery.id]
+
+        client.query(sql, values)
+          .then(beersThatBelong => {
+            if (beersThatBelong.rowCount > 0){
+              let beers = beersThatBelong.rows;
+              response.send(beers);
+            } else {
+              const url = `need beers by brewery url //TODO:GET THAT URL`
+
+              superagent.get(url)
+                .then(beersThatBelong=> {
+                  if(!beersThatBelong.body.data){
+                    errorHandler({status: 404}, 'No data from brewerydb', response);
+                  }
+                  //api call succeeded
+                })
+                .catch();
+            }
+          })
+      } else {
+       
+      }
+    }).catch(error => errorHandler(error));
+
+
+
+}
+//
+function haveBeer(request, response){
+
+}
 
 //fetch breweries and their beer list
 function breweries(request, response) {
@@ -193,6 +236,8 @@ function beers(request, response) {
     return response.render('./PlaceHolderPage.ejs', {beer: beer.rows});
   }).catch(error => errorHandler(error));
 }
+// from API: if (!breweryApiResults.body.data) this is when no beers from API
+// from DB: if (breweryResult.rowCount === 0) this is when no beers from DB
 
 //update a beer entry w/ a comment
 
