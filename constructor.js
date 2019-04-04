@@ -5,10 +5,9 @@ function Beer(input) {
   this.beer_id = input.id;
   this.abv = input.abv ? input.abv : null;
   this.ibu = input.ibu ? input.ibu : null;
-  this.usernote = '';
-  this.userrating = 0;
-  this.numvotes = 0;
   this.time_stamp = Date.now();
+  this.style_id = input.style.id;
+  this.brewery_id = input.breweries[0].id;
 }
 
 function Style(input) {
@@ -24,9 +23,9 @@ function Style(input) {
 
 function Brewery(input) {
   this.id = input.id;
-  this.brewery = input.name;
-  this.website = input.website ? input.website : null;
-  this.image = input.images ? input.images.squareMedium.replace(/http:\/\//i, 'https://') : '/img/alcohol-alcoholic-beer-1161466.jpg';
+  this.brewery = input.brewery.name;
+  this.website = input.brewery.website ? input.brewery.website : null;
+  this.image = input.brewery.images ? input.brewery.images.squareMedium.replace(/http:\/\//i, 'https://') : '/img/alcohol-alcoholic-beer-1161466.jpg';
   this.lat = input.latitude;
   this.long = input.longitude;
   this.time_stamp = Date.now();

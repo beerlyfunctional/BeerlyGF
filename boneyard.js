@@ -102,6 +102,7 @@ const brewerySeed = require('./data/breweries-seattle.json').data;
             console.log('🍺 Insert Complete', brewery);
           });
 
-
+let sql = `SELECT * FROM beers WHERE brewery_id = $1;`;
+              let values = [brewery_id]
 
 */

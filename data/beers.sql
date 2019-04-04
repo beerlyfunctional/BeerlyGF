@@ -1,7 +1,7 @@
-DROP TABLE IF EXISTS beers; 
 DROP TABLE IF EXISTS reviews;
+DROP TABLE IF EXISTS beers; 
 DROP TABLE IF EXISTS styles;
--- DROP TABLE IF EXISTS breweries;
+DROP TABLE IF EXISTS breweries;
 DROP TABLE IF EXISTS locations;
 
 CREATE TABLE IF NOT EXISTS locations(
@@ -34,14 +34,6 @@ CREATE TABLE IF NOT EXISTS styles(
   time_stamp NUMERIC(35)
 );
 
-CREATE TABLE IF NOT EXISTS reviews(
-  id SERIAL PRIMARY KEY,
-  beer_id VARCHAR(100) NOT NULL,
-  note TEXT,
-  rating INT,
-  time_stamp NUMERIC(35),
-  FOREIGN KEY (beer_id) REFERENCES beers(beer_id);
-)
 
 CREATE TABLE IF NOT EXISTS beers(
   id SERIAL PRIMARY KEY, 
@@ -56,3 +48,11 @@ CREATE TABLE IF NOT EXISTS beers(
   FOREIGN KEY(brewery_id) REFERENCES breweries(id)
 );
 
+CREATE TABLE IF NOT EXISTS reviews(
+  id SERIAL PRIMARY KEY,
+  beer_id VARCHAR(100) NOT NULL,
+  note TEXT,
+  rating INT,
+  time_stamp NUMERIC(35),
+  FOREIGN KEY (beer_id) REFERENCES beers(beer_id)
+);
