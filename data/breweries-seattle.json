@@ -4,127 +4,29 @@
     "totalResults": 168,
     "data": [
         {
-            "id": "Vgw8Kz",
-            "name": "Main Brewery",
-            "locality": "Seattle",
+            "id": "6Dy48S",
+            "name": "Bellevue",
+            "streetAddress": "550 106th Avenue NE",
+            "extendedAddress": "Suite 103",
+            "locality": "Bellevue",
             "region": "Washington",
-            "website": "http://filthybeers.com/",
-            "latitude": 47.6062095,
-            "longitude": -122.3320708,
-            "isPrimary": "Y",
-            "inPlanning": "N",
-            "isClosed": "N",
-            "openToPublic": "Y",
-            "locationType": "micro",
-            "locationTypeDisplay": "Micro Brewery",
-            "countryIsoCode": "US",
-            "status": "verified",
-            "statusDisplay": "Verified",
-            "createDate": "2012-01-03 02:41:54",
-            "updateDate": "2015-02-06 13:26:28",
-            "timezoneId": "America/Los_Angeles",
-            "breweryId": "UGuT78",
-            "brewery": {
-                "id": "UGuT78",
-                "name": "Filthy Brewing Alliance",
-                "nameShortDisplay": "Filthy Brewing Alliance",
-                "website": "http://filthybeers.com/",
-                "isOrganic": "N",
-                "status": "verified",
-                "statusDisplay": "Verified",
-                "createDate": "2012-01-03 02:41:54",
-                "updateDate": "2015-12-22 15:19:09",
-                "isMassOwned": "N",
-                "isInBusiness": "Y",
-                "brandClassification": "craft",
-                "isVerified": "N"
-            },
-            "country": {
-                "isoCode": "US",
-                "name": "UNITED STATES",
-                "displayName": "United States",
-                "isoThree": "USA",
-                "numberCode": 840,
-                "createDate": "2012-01-03 02:41:33"
-            }
-        },
-        {
-            "id": "drbRtr",
-            "name": "Main Brewery",
-            "locality": "Seattle",
-            "region": "Washington",
-            "latitude": 47.6062095,
-            "longitude": -122.3320708,
-            "isPrimary": "Y",
-            "inPlanning": "N",
-            "isClosed": "N",
-            "openToPublic": "Y",
-            "locationType": "micro",
-            "locationTypeDisplay": "Micro Brewery",
-            "countryIsoCode": "US",
-            "status": "verified",
-            "statusDisplay": "Verified",
-            "createDate": "2018-06-19 18:17:18",
-            "updateDate": "2018-06-19 18:19:03",
-            "timezoneId": "America/Los_Angeles",
-            "breweryId": "IR7FUQ",
-            "brewery": {
-                "id": "IR7FUQ",
-                "name": "Mirage",
-                "nameShortDisplay": "Mirage",
-                "description": "Small farmhouse-focused brewery in the Puget Sound.",
-                "website": "http://miragebeer.com",
-                "established": "2017",
-                "isOrganic": "N",
-                "images": {
-                    "icon": "https://brewerydb-images.s3.amazonaws.com/brewery/IR7FUQ/upload_U1YJhn-icon.png",
-                    "medium": "https://brewerydb-images.s3.amazonaws.com/brewery/IR7FUQ/upload_U1YJhn-medium.png",
-                    "large": "https://brewerydb-images.s3.amazonaws.com/brewery/IR7FUQ/upload_U1YJhn-large.png",
-                    "squareMedium": "https://brewerydb-images.s3.amazonaws.com/brewery/IR7FUQ/upload_U1YJhn-squareMedium.png",
-                    "squareLarge": "https://brewerydb-images.s3.amazonaws.com/brewery/IR7FUQ/upload_U1YJhn-squareLarge.png"
-                },
-                "status": "verified",
-                "statusDisplay": "Verified",
-                "createDate": "2018-06-19 16:07:33",
-                "updateDate": "2018-06-19 18:14:49",
-                "isMassOwned": "N",
-                "isInBusiness": "Y",
-                "brandClassification": "craft",
-                "isVerified": "N"
-            },
-            "country": {
-                "isoCode": "US",
-                "name": "UNITED STATES",
-                "displayName": "United States",
-                "isoThree": "USA",
-                "numberCode": 840,
-                "createDate": "2012-01-03 02:41:33"
-            }
-        },
-        {
-            "id": "iXgsHt",
-            "name": "Seattle",
-            "streetAddress": "1333 Fifth Avenue",
-            "locality": "Seattle",
-            "region": "Washington",
-            "postalCode": "98101",
-            "phone": "206.623.3070",
-            "website": "http://www.rockbottom.com/seattle",
-            "hoursOfOperation": "Mon - Thurs:  11am - 11pm\r\nFri - Sat:  11am - 1am\r\nSun:  11am - 11:30pm",
-            "latitude": 47.608962,
-            "longitude": -122.334067,
+            "postalCode": "98004",
+            "phone": "425.462.9300",
+            "website": "http://www.rockbottom.com/bellevue",
+            "latitude": 47.61513,
+            "longitude": -122.1980441,
             "isPrimary": "N",
             "inPlanning": "N",
-            "isClosed": "N",
-            "openToPublic": "Y",
+            "isClosed": "Y",
+            "openToPublic": "N",
             "locationType": "brewpub",
             "locationTypeDisplay": "Brewpub",
             "countryIsoCode": "US",
             "status": "verified",
             "statusDisplay": "Verified",
-            "createDate": "2012-10-04 14:48:04",
-            "updateDate": "2014-07-23 19:11:34",
-            "hoursOfOperationNotes": "Mon - Thurs:  11am - 11pm\r\nFri - Sat:  11am - 1am\r\nSun:  11am - 11:30pm",
+            "createDate": "2012-10-04 14:46:58",
+            "updateDate": "2016-07-18 19:23:40",
+            "timezoneId": "America/Los_Angeles",
             "breweryId": "D1UQzj",
             "brewery": {
                 "id": "D1UQzj",
@@ -162,63 +64,7 @@
                 "numberCode": 840,
                 "createDate": "2012-01-03 02:41:33"
             },
-            "distance": 0.2
-        },
-        {
-            "id": "Suw3lO",
-            "name": "Main Office",
-            "locality": "Seattle",
-            "region": "Washington",
-            "postalCode": "98101",
-            "website": "http://americanvintagebeverage.com/",
-            "latitude": 47.6084921,
-            "longitude": -122.336407,
-            "isPrimary": "Y",
-            "inPlanning": "N",
-            "isClosed": "N",
-            "openToPublic": "N",
-            "locationType": "office",
-            "locationTypeDisplay": "Office",
-            "countryIsoCode": "US",
-            "yearOpened": "2010",
-            "status": "verified",
-            "statusDisplay": "Verified",
-            "createDate": "2014-07-23 11:46:05",
-            "updateDate": "2015-12-03 19:11:03",
-            "breweryId": "xCKJdE",
-            "brewery": {
-                "id": "xCKJdE",
-                "name": "American Vintage Beverage Inc",
-                "nameShortDisplay": "American Vintage Beverage",
-                "description": "At American Vintage Beverage Co., brewing great tasting teas is an art and a passion. We start with a blend of American and imported teas, and slow steep them to release and blend the flavors right in the kettle.",
-                "website": "http://americanvintagebeverage.com/",
-                "established": "2010",
-                "isOrganic": "N",
-                "images": {
-                    "icon": "https://brewerydb-images.s3.amazonaws.com/brewery/xCKJdE/upload_nWN0MW-icon.png",
-                    "medium": "https://brewerydb-images.s3.amazonaws.com/brewery/xCKJdE/upload_nWN0MW-medium.png",
-                    "large": "https://brewerydb-images.s3.amazonaws.com/brewery/xCKJdE/upload_nWN0MW-large.png",
-                    "squareMedium": "https://brewerydb-images.s3.amazonaws.com/brewery/xCKJdE/upload_nWN0MW-squareMedium.png",
-                    "squareLarge": "https://brewerydb-images.s3.amazonaws.com/brewery/xCKJdE/upload_nWN0MW-squareLarge.png"
-                },
-                "status": "verified",
-                "statusDisplay": "Verified",
-                "createDate": "2014-07-21 21:14:45",
-                "updateDate": "2015-12-22 15:56:16",
-                "isMassOwned": "N",
-                "isInBusiness": "Y",
-                "brandClassification": "craft",
-                "isVerified": "N"
-            },
-            "country": {
-                "isoCode": "US",
-                "name": "UNITED STATES",
-                "displayName": "United States",
-                "isoThree": "USA",
-                "numberCode": 840,
-                "createDate": "2012-01-03 02:41:33"
-            },
-            "distance": 0.3
+            "distance": 6.3
         },
         {
             "id": "043Fs7",
@@ -332,6 +178,334 @@
                 "createDate": "2012-01-03 02:41:33"
             },
             "distance": 0.4
+        },
+        {
+            "id": "ZxxPpM",
+            "name": "Main Brewery",
+            "streetAddress": "2942 1st Ave S",
+            "locality": "Seattle",
+            "region": "Washington",
+            "postalCode": "98134",
+            "website": "http://ghostfishbrewing.com",
+            "latitude": 47.5762875,
+            "longitude": -122.3338489,
+            "isPrimary": "Y",
+            "inPlanning": "N",
+            "isClosed": "N",
+            "openToPublic": "Y",
+            "locationType": "micro",
+            "locationTypeDisplay": "Micro Brewery",
+            "countryIsoCode": "US",
+            "status": "verified",
+            "statusDisplay": "Verified",
+            "createDate": "2015-07-29 18:42:32",
+            "updateDate": "2017-08-22 16:33:49",
+            "timezoneId": "America/Los_Angeles",
+            "breweryId": "Z9NueY",
+            "brewery": {
+                "id": "Z9NueY",
+                "name": "Ghostfish Brewing Company",
+                "nameShortDisplay": "Ghostfish",
+                "description": "Washington State's first and only dedicated gluten-free brewery.  Ghostfish offers a wide variety of craft beer styles produced from unusual malted grains, such as millet, brown rice, and buckwheat.",
+                "website": "http://ghostfishbrewing.com",
+                "established": "2015",
+                "isOrganic": "N",
+                "images": {
+                    "icon": "https://brewerydb-images.s3.amazonaws.com/brewery/Z9NueY/upload_GAzuHB-icon.png",
+                    "medium": "https://brewerydb-images.s3.amazonaws.com/brewery/Z9NueY/upload_GAzuHB-medium.png",
+                    "large": "https://brewerydb-images.s3.amazonaws.com/brewery/Z9NueY/upload_GAzuHB-large.png",
+                    "squareMedium": "https://brewerydb-images.s3.amazonaws.com/brewery/Z9NueY/upload_GAzuHB-squareMedium.png",
+                    "squareLarge": "https://brewerydb-images.s3.amazonaws.com/brewery/Z9NueY/upload_GAzuHB-squareLarge.png"
+                },
+                "status": "verified",
+                "statusDisplay": "Verified",
+                "createDate": "2015-07-29 18:42:31",
+                "updateDate": "2018-11-06 04:27:54",
+                "isMassOwned": "N",
+                "isInBusiness": "Y",
+                "brandClassification": "craft",
+                "brewersAssociation": {
+                    "brewersAssocationId": "V80YZPIOTS",
+                    "isCertifiedCraftBrewer": "Y"
+                },
+                "isVerified": "Y",
+                "claims": [
+                    {
+                        "id": 1536,
+                        "userId": 9768,
+                        "user": {
+                            "id": 9768,
+                            "firstName": "Jason",
+                            "lastName": "Yerger",
+                            "countryIsoCode": "US",
+                            "email": "igliashon@ghostfishbrewing.com",
+                            "sandboxAppLimit": 1,
+                            "country": {
+                                "isoCode": "US",
+                                "name": "UNITED STATES",
+                                "displayName": "United States",
+                                "isoThree": "USA",
+                                "numberCode": 840,
+                                "createDate": "2012-01-03 02:41:33"
+                            },
+                            "createDate": "2016-06-23 16:16:22"
+                        },
+                        "breweryId": "Z9NueY",
+                        "brewery": {
+                            "id": "Z9NueY",
+                            "name": "Ghostfish Brewing Company",
+                            "nameShortDisplay": "Ghostfish",
+                            "website": "http://ghostfishbrewing.com",
+                            "images": {
+                                "icon": "https://brewerydb-images.s3.amazonaws.com/brewery/Z9NueY/upload_GAzuHB-icon.png",
+                                "medium": "https://brewerydb-images.s3.amazonaws.com/brewery/Z9NueY/upload_GAzuHB-medium.png",
+                                "large": "https://brewerydb-images.s3.amazonaws.com/brewery/Z9NueY/upload_GAzuHB-large.png",
+                                "squareMedium": "https://brewerydb-images.s3.amazonaws.com/brewery/Z9NueY/upload_GAzuHB-squareMedium.png",
+                                "squareLarge": "https://brewerydb-images.s3.amazonaws.com/brewery/Z9NueY/upload_GAzuHB-squareLarge.png"
+                            },
+                            "status": "verified",
+                            "statusDisplay": "Verified",
+                            "createDate": "2015-07-29 18:42:31",
+                            "updateDate": "2018-11-06 04:27:54",
+                            "isInBusiness": "Y",
+                            "brewersAssociation": {
+                                "brewersAssocationId": "V80YZPIOTS",
+                                "isCertifiedCraftBrewer": "Y"
+                            },
+                            "isVerified": "Y"
+                        },
+                        "verificationCode": "5315c561167f89878a496aeacb03cdd57df04909",
+                        "verifiedDate": "2016-06-23 12:26:40",
+                        "createDate": "2016-06-23 16:16:52",
+                        "status": "verified_claim"
+                    }
+                ]
+            },
+            "country": {
+                "isoCode": "US",
+                "name": "UNITED STATES",
+                "displayName": "United States",
+                "isoThree": "USA",
+                "numberCode": 840,
+                "createDate": "2012-01-03 02:41:33"
+            },
+            "distance": 2.1
+        },
+        {
+            "id": "sLkjQ2",
+            "name": "Main Brewery",
+            "streetAddress": "2959 Utah Ave S",
+            "extendedAddress": "Suite 2",
+            "locality": "Seattle",
+            "region": "Washington",
+            "postalCode": "98134",
+            "phone": "206-682-7985",
+            "website": "http://seapinebrewing.com/",
+            "latitude": 47.5760674,
+            "longitude": -122.3355614,
+            "isPrimary": "Y",
+            "inPlanning": "N",
+            "isClosed": "N",
+            "openToPublic": "Y",
+            "locationType": "tasting",
+            "locationTypeDisplay": "Tasting Room",
+            "countryIsoCode": "US",
+            "status": "verified",
+            "statusDisplay": "Verified",
+            "createDate": "2014-09-23 14:49:59",
+            "updateDate": "2017-03-06 20:55:31",
+            "hoursOfOperationExplicit": {
+                "tue": [
+                    {
+                        "startTime": "3:00pm",
+                        "endTime": "10:00pm"
+                    }
+                ],
+                "wed": [
+                    {
+                        "startTime": "3:00pm",
+                        "endTime": "10:00pm"
+                    }
+                ],
+                "thu": [
+                    {
+                        "startTime": "3:00pm",
+                        "endTime": "10:00pm"
+                    }
+                ],
+                "fri": [
+                    {
+                        "startTime": "3:00pm",
+                        "endTime": "10:00pm"
+                    }
+                ],
+                "sat": [
+                    {
+                        "startTime": "12:00pm",
+                        "endTime": "10:00pm"
+                    }
+                ],
+                "sun": [
+                    {
+                        "startTime": "12:00pm",
+                        "endTime": "8:00pm"
+                    }
+                ]
+            },
+            "hoursOfOperationExplicitString": "tue-3:00pm-10:00pm,wed-3:00pm-10:00pm,thu-3:00pm-10:00pm,fri-3:00pm-10:00pm,sat-12:00pm-10:00pm,sun-12:00pm-8:00pm",
+            "timezoneId": "America/Los_Angeles",
+            "breweryId": "UM9Y1i",
+            "brewery": {
+                "id": "UM9Y1i",
+                "name": "Seapine Brewing Company",
+                "nameShortDisplay": "Seapine",
+                "description": "Opened in 2012, Seapine is dedicated to brewing classic styles and we strive for perfection in every pint. Stop by and grab a pint, fill a growler, or just say hello!",
+                "website": "http://seapinebrewing.com",
+                "established": "2012",
+                "isOrganic": "N",
+                "images": {
+                    "icon": "https://brewerydb-images.s3.amazonaws.com/brewery/UM9Y1i/upload_wE0WWr-icon.png",
+                    "medium": "https://brewerydb-images.s3.amazonaws.com/brewery/UM9Y1i/upload_wE0WWr-medium.png",
+                    "large": "https://brewerydb-images.s3.amazonaws.com/brewery/UM9Y1i/upload_wE0WWr-large.png",
+                    "squareMedium": "https://brewerydb-images.s3.amazonaws.com/brewery/UM9Y1i/upload_wE0WWr-squareMedium.png",
+                    "squareLarge": "https://brewerydb-images.s3.amazonaws.com/brewery/UM9Y1i/upload_wE0WWr-squareLarge.png"
+                },
+                "status": "verified",
+                "statusDisplay": "Verified",
+                "createDate": "2014-09-23 04:29:47",
+                "updateDate": "2018-11-02 23:34:52",
+                "isMassOwned": "N",
+                "isInBusiness": "Y",
+                "brandClassification": "craft",
+                "brewersAssociation": {
+                    "brewersAssocationId": "V9L0DNG5JU",
+                    "isCertifiedCraftBrewer": "Y"
+                },
+                "isVerified": "N"
+            },
+            "country": {
+                "isoCode": "US",
+                "name": "UNITED STATES",
+                "displayName": "United States",
+                "isoThree": "USA",
+                "numberCode": 840,
+                "createDate": "2012-01-03 02:41:33"
+            },
+            "distance": 2.1
+        },
+        {
+            "id": "ZePAkY",
+            "name": "West Seattle",
+            "streetAddress": "4720 California Avenue SW",
+            "locality": "Seattle",
+            "region": "Washington",
+            "postalCode": "98116",
+            "phone": "1-206-932-8695",
+            "website": "http://www.elliottbaybrewing.com/",
+            "hoursOfOperation": "Monday-Saturday: 11 AM – 12 midnight\r\nSunday: 11 AM – 11 PM",
+            "latitude": 47.5604033,
+            "longitude": -122.3866565,
+            "isPrimary": "N",
+            "inPlanning": "N",
+            "isClosed": "N",
+            "openToPublic": "Y",
+            "locationType": "brewpub",
+            "locationTypeDisplay": "Brewpub",
+            "countryIsoCode": "US",
+            "status": "verified",
+            "statusDisplay": "Verified",
+            "createDate": "2012-01-03 02:41:53",
+            "updateDate": "2014-07-23 19:11:34",
+            "hoursOfOperationNotes": "Monday-Saturday: 11 AM – 12 midnight\r\nSunday: 11 AM – 11 PM",
+            "breweryId": "J91bB8",
+            "brewery": {
+                "id": "J91bB8",
+                "name": "Elliott Bay Brewery and Pub",
+                "nameShortDisplay": "Elliott Bay Brewery and Pub",
+                "description": "Elliott Bay Brewing Co. is a family owned company of high quality neighborhood brewpubs in communities throughout the Seattle area.  Owners Todd Carden and Brent Norton met in 1994 while working for the iconic Maritime Pacific Brewing Co. They forged a friendship and explored their common goal and dream of owning and operating their own brewpub. They also met Head Brewer Doug Hindman at Maritime Pacific.\r\nTodd and Brent incorporated the company in November of 1996.   In March 1997 they signed their first lease and began construction of a brewpub in the historic “Junction” of West Seattle.  They opened for business on July 11, 1997.  Doug joined the ranks in September of 1997 and has been Head Brewer ever since.\r\n\r\nOver the past thirteen years in West Seattle, Elliott Bay Brewery & Pub has been a leader in sustainability, philanthropic support, and instumental in creating an amazing sense of community in the neighborhoods which it serves.  Elliott Bay Brewhouse and Pub, the companyís second brewpub, opened in Burien in March of 2007.  The Burien Brewhouse, like its West Seattle sibling, supports a progressive company culture and socially responsible business practices.In 2013 Elliott Bay opened its third brewpub location in the Lake City neighborhood of NE Seattle. Together these three brewing locations product about 3,000 barrels each year.",
+                "website": "http://www.elliottbaybrewing.com/",
+                "established": "1997",
+                "isOrganic": "Y",
+                "images": {
+                    "icon": "https://brewerydb-images.s3.amazonaws.com/brewery/J91bB8/upload_k8IwIl-icon.png",
+                    "medium": "https://brewerydb-images.s3.amazonaws.com/brewery/J91bB8/upload_k8IwIl-medium.png",
+                    "large": "https://brewerydb-images.s3.amazonaws.com/brewery/J91bB8/upload_k8IwIl-large.png",
+                    "squareMedium": "https://brewerydb-images.s3.amazonaws.com/brewery/J91bB8/upload_k8IwIl-squareMedium.png",
+                    "squareLarge": "https://brewerydb-images.s3.amazonaws.com/brewery/J91bB8/upload_k8IwIl-squareLarge.png"
+                },
+                "status": "verified",
+                "statusDisplay": "Verified",
+                "createDate": "2012-01-03 02:41:53",
+                "updateDate": "2018-11-06 04:12:01",
+                "isMassOwned": "N",
+                "isInBusiness": "Y",
+                "brandClassification": "craft",
+                "brewersAssociation": {
+                    "brewersAssocationId": "PN3MXRJ4QV",
+                    "isCertifiedCraftBrewer": "Y"
+                },
+                "isVerified": "Y",
+                "claims": [
+                    {
+                        "id": 730,
+                        "userId": 18767,
+                        "user": {
+                            "id": 18767,
+                            "firstName": "Doug",
+                            "lastName": "Hindman",
+                            "countryIsoCode": "US",
+                            "email": "doug.hindman@elliottbaybrewing.com",
+                            "sandboxAppLimit": 1,
+                            "country": {
+                                "isoCode": "US",
+                                "name": "UNITED STATES",
+                                "displayName": "United States",
+                                "isoThree": "USA",
+                                "numberCode": 840,
+                                "createDate": "2012-01-03 02:41:33"
+                            },
+                            "createDate": "2018-06-08 19:29:16"
+                        },
+                        "breweryId": "J91bB8",
+                        "brewery": {
+                            "id": "J91bB8",
+                            "name": "Elliott Bay Brewery and Pub",
+                            "nameShortDisplay": "Elliott Bay Brewery and Pub",
+                            "website": "http://www.elliottbaybrewing.com/",
+                            "images": {
+                                "icon": "https://brewerydb-images.s3.amazonaws.com/brewery/J91bB8/upload_k8IwIl-icon.png",
+                                "medium": "https://brewerydb-images.s3.amazonaws.com/brewery/J91bB8/upload_k8IwIl-medium.png",
+                                "large": "https://brewerydb-images.s3.amazonaws.com/brewery/J91bB8/upload_k8IwIl-large.png",
+                                "squareMedium": "https://brewerydb-images.s3.amazonaws.com/brewery/J91bB8/upload_k8IwIl-squareMedium.png",
+                                "squareLarge": "https://brewerydb-images.s3.amazonaws.com/brewery/J91bB8/upload_k8IwIl-squareLarge.png"
+                            },
+                            "status": "verified",
+                            "statusDisplay": "Verified",
+                            "createDate": "2012-01-03 02:41:53",
+                            "updateDate": "2018-11-06 04:12:01",
+                            "isInBusiness": "Y",
+                            "brewersAssociation": {
+                                "brewersAssocationId": "PN3MXRJ4QV",
+                                "isCertifiedCraftBrewer": "Y"
+                            },
+                            "isVerified": "Y"
+                        },
+                        "verificationCode": "a65a5615005990f7695b98a1f7e70b7b1a7a6cfd",
+                        "verifiedDate": "2018-06-08 15:46:06",
+                        "createDate": "2018-06-08 19:30:12",
+                        "status": "verified_claim"
+                    }
+                ]
+            },
+            "country": {
+                "isoCode": "US",
+                "name": "UNITED STATES",
+                "displayName": "United States",
+                "isoThree": "USA",
+                "numberCode": 840,
+                "createDate": "2012-01-03 02:41:33"
+            },
+            "distance": 4.1
         }
     ],
     "status": "success"
