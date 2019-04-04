@@ -9,9 +9,25 @@ function initMap() {
     center: {lat: 47.608013, lng: -122.335167}
   });
 
-  //putting a beer marker at Alki Beach
+  //bottle image
   let image = './img/label_bottle.png';
 
+  //brewery.map(element =>{
+  // let beerMarker = new google.maps.Marker({
+  //   position: {lat: element.lat, lng: element.lng},
+  //   map: map,
+  //   icon: image
+  // });
+
+  //initializes the popup
+  // Popup = createPopupClass();
+  // let popUpLat = element.lat + 0.012;
+  // popup = new Popup(
+  //   new google.maps.LatLng(popUpLat, element.lng),
+  //   document.getElementById('content'));
+  // popup.setMap(map);
+
+  //})
   let beerMarker = new google.maps.Marker({
     //this will be tied to the brewery locations we pull from beerDB
     position: {lat: 47.580, lng: -122.402},
@@ -25,6 +41,7 @@ function initMap() {
     new google.maps.LatLng(47.592, -122.402),
     document.getElementById('content'));
   popup.setMap(map);
+
 }
 
 //returns the popup class

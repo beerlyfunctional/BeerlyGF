@@ -53,6 +53,6 @@ CREATE TABLE IF NOT EXISTS reviews(
   note TEXT,
   rating INT,
   time_stamp NUMERIC(35),
-  gf BOOLEAN
+  gf BOOLEAN,
   FOREIGN KEY (beer_id) REFERENCES beers(beer_id)
 );

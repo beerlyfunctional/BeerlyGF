@@ -1,6 +1,7 @@
 const superagent = require('superagent');
 const constructor = require('./constructor.js');
-
+require('dotenv').config();
+//console.log(process.env.PORT);
 //get that client realness
 
 const pg = require('pg');
@@ -12,7 +13,7 @@ client.on('error', error => errorHandler(error));
 function errorHandler(error, message, res) {
   console.error(error);
   if (message) {
-    console.log('Error message:', message);
+    //console.log('Error message:', message);
     if (res) {
       res.send(message);
     }
@@ -21,6 +22,7 @@ function errorHandler(error, message, res) {
 
 // Search function
 function search(request, response) {
+  // console.log('in search')
   // check database to see if data is in DB
   let city = request.body.query;
   let values = [city];
@@ -34,8 +36,8 @@ function search(request, response) {
 
       if (locationResult.rowCount > 0) {
         //transfer control over to map function -> which will do the rendering
-        console.log('info from db w/o api call', locationResult.rows);
         location = locationResult.rows[0];
+        console.log('got location from db')
 
         let sql = `SELECT * FROM breweries WHERE location_id = $1;`;
         let values = [location.id];
@@ -43,11 +45,10 @@ function search(request, response) {
         client
           .query(sql, values)
           .then(breweryResults => {
-
+            console.log('breweryResults?')
             if (breweryResults.rowCount > 0) {
 
               breweries = breweryResults.rows;
-              console.log(breweries, 'breweries from DB 🐨');
               response.send(location);
 
             } else { // get breweries from API
@@ -56,8 +57,9 @@ function search(request, response) {
 
               superagent.get(url)
                 .then(breweryResults => {
+                  // console.log('in superagent');
                   if (!breweryResults.body.data) {
-                    errorHandler({ status: 404 }, 'No data from brewerydb', response);
+                    return errorHandler({ status: 404 }, 'No data from brewerydb', response);
                   }
                   breweries = breweryResults.body.data.map(breweryData => {
                     let brewery = new constructor.Brewery(breweryData);
@@ -67,7 +69,6 @@ function search(request, response) {
 
                     client.query(sql, values)
                       .catch(error => errorHandler(error));
-                    console.log(`brewery ${brewery.id} added to db`);
 
                     sql = `SELECT * FROM breweries WHERE id=$1;`;
                     values = Object.values(brewery.id);
@@ -86,14 +87,13 @@ function search(request, response) {
           .catch(error => errorHandler(error));
 
       } else {
-        console.log('No SQL result, going to geocode API');
+        //console.log('No SQL result, going to geocode API');
         const url = `https://maps.googleapis.com/maps/api/geocode/json?key=${process.env.GOOGLE_API_KEY}&address=${city}`;
-
         superagent
           .get(url)
           .then(data => {
 
-            console.log('🗺 from the googs');
+            // console.log('🗺 from the googs');
             if (!data.body.results.length) {
               errorHandler({ status: 404 }, 'Google API not returning any data. Please check your input', response);
               throw 'Where are we??? Nothing back from GeoCodeAPI';
@@ -119,7 +119,6 @@ function search(request, response) {
                       if (breweryResults.rowCount > 0) {
 
                         breweries = breweryResults.rows;
-                        console.log(breweries, 'breweries from DB 🐨');
                         response.send(location);
 
                       } else { // get breweries from API
@@ -139,6 +138,7 @@ function search(request, response) {
 
                               client.query(sql, values)
                                 .catch(error => errorHandler(error));
+
                               console.log(`brewery ${brewery.id} added to db`);
 
                               sql = `SELECT * FROM breweries WHERE id=$1;`;
@@ -260,7 +260,7 @@ function seed(req, res) {
     .query(sql, values)
     .then(result => {
       if (!result.rowCount) throw 'All broken, stop now';
-      console.log('result found');
+      //console.log('result found');
       location = result.rows[0];
 
       const breweryArray = brewerySeed
@@ -272,7 +272,7 @@ function seed(req, res) {
           let values = Object.values(brewery);
           client.query(sql, values)
             .catch(error => errorHandler(error));
-          console.log('🍺 Insert Complete');
+          //.log('🍺 Insert Complete');
           return brewery;
         });
 
@@ -283,7 +283,7 @@ function seed(req, res) {
         let values = Object.values(thisStyle);
         client.query(sql, values)
           .catch(error => errorHandler(error));
-        console.log('Style Insert Complete');
+        //console.log('Style Insert Complete');
         return thisStyle;
       });
 
@@ -292,10 +292,10 @@ function seed(req, res) {
         let beer = new constructor.Beer(element);
         let sql = `INSERT INTO beers(name, beer_id, abv, ibu, time_stamp, style_id, brewery_id) VALUES($1,$2,$3,$4,$5,$6,$7) ON CONFLICT DO NOTHING;`;
         let values = Object.values(beer);
-        console.log(beer.brewery_id);
+        // console.log(beer.brewery_id);
         client.query(sql, values)
           .catch(error => errorHandler(error));
-        console.log('🍺 Insert Complete', beer);
+        // console.log('🍺 Insert Complete', beer);
         return beer;
       });
       res.render('pages/datadisplay', { breweries: breweryArray, styles: styleArray, beers: beerArray });
