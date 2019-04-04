@@ -35,6 +35,9 @@ app.listen(PORT, () => console.log(`Beerly here on PORT ${PORT}`));
 //server routes
 app.get('/', mainPage);
 app.post('/search', helpers.search);
+app.get('/breweries/:brewery_id', helpers.breweries);
+app.get('/beers/:beer_id', helpers.beers);
+app.get('/seeddb', helpers.seed);
 
 //generic route for all incorrect access
 app.use('*', (req, res) => helpers.errorHandler({status:404}, 'You have reached a page that does not exist.', res));
