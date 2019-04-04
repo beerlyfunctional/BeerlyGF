@@ -1,6 +1,8 @@
 //Running a test on Seattle Washington
 
 let popup, Popup; 
+let location = require('../server.js');
+console.log(location);
 
 function initMap() {
   let map = new google.maps.Map(document.getElementById('beer-map'), {

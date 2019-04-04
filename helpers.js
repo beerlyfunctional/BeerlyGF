@@ -1,3 +1,5 @@
+var location = {};
+
 const superagent = require('superagent');
 const constructor = require('./constructor.js');
 require('dotenv').config();
@@ -28,7 +30,7 @@ function search(request, response) {
   let values = [city];
   let sql = `SELECT * FROM locations WHERE search_query=$1;`;
 
-  let location;
+
   let breweries;
   client
     .query(sql, values)
@@ -271,4 +273,4 @@ function seed(req, res) {
 
   const brewerySeed = require('./data/breweries-seattle.json').data;
 }
-module.exports = {search, errorHandler, breweries, beers, seed, review, removeReview};
+module.exports = {search, errorHandler, breweries, beers, seed, review, removeReview, location};
