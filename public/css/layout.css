@@ -5,11 +5,12 @@
   height: 100vh; 
   margin: 0px auto;
   display: grid; 
-  grid-template-rows: [header] 20vh [body] auto [footer] 10vh;
+  grid-template-rows: [header] 15vh [body] auto [body2] auto [body3] auto [body4] auto [footer] 15vh;
   grid-template-columns: [first] 3vw [second] 20vw [third] auto [fourth] 20vw [end] 3vw;
   grid-template-areas: 
   "header header header header header"
   ". main main main ."
+  "section section section section section"
   "footer footer footer footer footer"
 }
 
@@ -22,14 +23,17 @@
 }
 
 .header{
-  background-size: cover;
+  width: 100vw;
+  background-size: 100%;
+  background-repeat: no-repeat;
+  background-position-x: absolute;
   grid-area: header;
   background-image: url('/img/beer-taps-2631121_1920.jpg');
 }
 
 
 .logo{
-  height: 20vh;
+  height: 15vh;
 }
 
 .search-section{
@@ -45,6 +49,17 @@ form{
   
 }
 
+#about{
+  grid-area: section;
+  display: inline-flex;
+  justify-content: space-between;
+  background-color: transparent;
+
+}
+#cheers{
+  height: 30vw;
+}
+
 .footer{
   background-size: cover;
   grid-area: footer;
@@ -54,7 +69,7 @@ form{
 
 #menu-icon{
   display: hidden;
-  height: 20vh;
+  height: 15vh;
   background-color: transparent;
 }
 
