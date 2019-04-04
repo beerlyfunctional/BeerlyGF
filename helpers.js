@@ -74,7 +74,7 @@ function search(request, response) {
                     client.query(sql, values)
                       .then(breweryQueryResult => {
                         // this is where the brewery gets returned for the map method
-                        return breweryQueryResult.rows[0];
+                        getBreweriesWeWantToRender(breweryQueryResult, response)
                       })
                       .catch(error => errorHandler(error));
                   });
@@ -169,22 +169,20 @@ function search(request, response) {
 }
 
 //render map
-function getBreweriesWeWantToRender(breweryApiResults) {
+function getBreweriesWeWantToRender(breweryApiResults, response) {
   //every brewery on the map needs to have beers avaliable
+  let url = `https://api.brewerydb.com/v2/brewery/${brewery.id}/beers?key=${BREWERYDB_API_KEY};`
+  let breweryArray = [];
 
-let url = `https://api.brewerydb.com/v2/brewery/${brewery.id}/beers?key=${BREWERYDB_API_KEY};`
-let breweryArray = [];
-
-breweryApiResults.forEach(brewery => {
-  superagent.get(url)
-    .then( beers => {
-    if(beers.body.data){
-      breweryArray.push(brewery);
-    }
-  }).catch(error => errorHandler(error))
-})
-
-
+  breweryApiResults.forEach(brewery => {
+    superagent.get(url)
+      .then( beers => {
+        if(beers.body.data){
+          breweryArray.push(brewery);
+        }
+      }).catch(error => errorHandler(error))
+  })
+  response.render('/search', {breweryArray})
 }
 //
 function haveBeer(request, response){
@@ -214,8 +212,6 @@ function beers(request, response) {
     return response.render('./PlaceHolderPage.ejs', {beer: beer.rows[0]});
   }).catch(error => errorHandler(error));
 }
-// from API: if (!breweryApiResults.body.data) this is when no beers from API
-// from DB: if (breweryResult.rowCount === 0) this is when no beers from DB
 
 //update a beer entry w/ a comment
 
@@ -240,6 +236,18 @@ function removeReview(request, response){
     .then(response.redirect('/beers/:beer_id'))
     .catch(error => errorHandler(error));
 
+}
+
+//render shelf
+
+function shelf(request, response){
+  let sql = //join function
+
+client.query(sql [request.params.beer_id]).then(shelfResult =>{
+  if(shelfResult.rows.length > 0){
+    return response.render(`./shelf`, {shelf: shelfResult.rows});
+  }
+}).catch(error => errorHandler(error));
 }
 
 //database seeding
@@ -296,4 +304,4 @@ function seed(req, res) {
 
   const brewerySeed = require('./data/breweries-seattle.json').data;
 }
-module.exports = {search, errorHandler, breweries, beers, seed, review, removeReview};
+module.exports = {search, errorHandler, breweries, beers, seed, review, removeReview, shelf};
