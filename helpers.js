@@ -190,8 +190,33 @@ function beers(request, response) {
   let sql = `SELECT * FROM beers WHERE id=$1;`;
 
   client.query(sql [request.params.beer_id]).then(beer => {
-    return response.render('./PlaceHolderPage.ejs', {beer: beer.rows});
+    return response.render('./PlaceHolderPage.ejs', {beer: beer.rows[0]});
   }).catch(error => errorHandler(error));
+}
+
+//update a beer entry w/ a comment
+
+function review(request, response){
+  let {id, beer_id, note, rating, time_stamp, gf} = request.body
+
+  let SQL = `INSERT INTO reviews(id, beer_id, note, rating, time_stamp, gf) VALUES($1, $2, $3, $4, $5, $6);`;
+  let values = [id, beer_id, note, rating, time_stamp, gf];
+
+  return client.query(SQL, values)
+    .then(response.redirect('/beers/:beer_id'))
+    .catch(error => errorHandler(error))
+}
+
+//delete a comment
+
+function removeReview(request, response){
+  let SQL = `DELETE FROM reviews WHERE id=$q`;
+  let values = [request.params.id];
+
+  return client.query(SQL, values)
+    .then(response.redirect('/beers/:beer_id'))
+    .catch(error => errorHandler(error));
+
 }
 
 //database seeding
@@ -248,4 +273,4 @@ function seed(req, res) {
 
   const brewerySeed = require('./data/breweries-seattle.json').data;
 }
-module.exports = { search, errorHandler, breweries, beers, seed };
+module.exports = {search, errorHandler, breweries, beers, seed, review, removeReview};
