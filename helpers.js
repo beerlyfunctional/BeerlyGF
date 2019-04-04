@@ -169,42 +169,18 @@ function search(request, response) {
 }
 
 //render map
-function getBreweriesWeWantToRender(request, response) {
+function getBreweriesWeWantToRender(breweryApiResults) {
   //every brewery on the map needs to have beers avaliable
 
-  let sql = `SELECT * FROM breweries WHERE location_id=$1;`;
-  let values = [location.id]
+let url = ;
+let breweryArray = [];
 
-  client.query(sql, values)
-    .then(cachedBreweries => {
-      if (cachedBreweries.rowCount > 0){
-        //check db/api for beers
-        let sql = `SELECT * FROM beers WHERE brewery_id=$1;`;
-        let values = [brewery.id]
+breweryApiResults.forEach(gotBeer(brewery) => {
+  superagent.get(url)
+  .then(eachBeer => {
 
-        client.query(sql, values)
-          .then(beersThatBelong => {
-            if (beersThatBelong.rowCount > 0){
-              let beers = beersThatBelong.rows;
-              response.send(beers);
-            } else {
-              const url = `need beers by brewery url //TODO:GET THAT URL`
-
-              superagent.get(url)
-                .then(beersThatBelong=> {
-                  if(!beersThatBelong.body.data){
-                    errorHandler({status: 404}, 'No data from brewerydb', response);
-                  }
-                  //api call succeeded
-                })
-                .catch();
-            }
-          })
-      } else {
-       
-      }
-    }).catch(error => errorHandler(error));
-
+  })
+})
 
 
 }
