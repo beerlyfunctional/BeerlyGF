@@ -1,10 +1,10 @@
 'use strict';
+require('dotenv').config();
 
 //server requirements (packages)
 const express = require('express');
 
 const methodOverride = require('method-override');
-require('dotenv').config();
 
 const helpers = require('./helpers.js');
 
@@ -43,7 +43,7 @@ app.delete('/beers/:beer_id', helpers.removeReview);
 app.get('/shelf/:beer_id', helpers.shelf);
 
 //generic route for all incorrect access
-app.use('*', (req, res) => helpers.errorHandler({status:404}, 'You have reached a page that does not exist.', res));
+app.use('*', (req, res) => helpers.errorHandler({status: 404, line: 45, server: true}, 'You have reached a page that does not exist.', res));
 
 //route callback functions
 function mainPage(req, res) {
