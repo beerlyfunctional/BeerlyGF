@@ -1,17 +1,18 @@
 'use strict';
-require('dotenv').config();
 
 //server requirements (packages)
 const express = require('express');
-
+const superagent = require('superagent');
 const methodOverride = require('method-override');
-
-const helpers = require('./helpers.js');
+const pg = require('pg');
+require('dotenv').config();
 
 //config of server (variables)
 const PORT = process.env.PORT;
 
-
+const client = new pg.Client(process.env.DATABASE_URL);
+client.connect();
+client.on('error', error => errorHandler(error));
 
 const app = express();
 
@@ -34,23 +35,71 @@ app.listen(PORT, () => console.log(`Beerly here on PORT ${PORT}`));
 
 //server routes
 app.get('/', mainPage);
-app.post('/search', helpers.search);
-app.get('/breweries/:brewery_id', helpers.breweries);
-app.get('/beers/:beer_id', helpers.beers);
-app.get('/seeddb', helpers.seed);
-app.post('/beers/:beer_id', helpers.review);
-app.delete('/beers/:beer_id/:review_id', helpers.removeReview);
-app.get('/shelf/:beer_id', helpers.shelf);
-app.get('/location', helpers.getLocation);
-app.get('/breweries', helpers.getBreweries);
-// app.get('/beers', helpers.getBeers);
-// app.get('/styles', helpers.getStyles);
+app.post('/search-results', getBeer);
 
 //generic route for all incorrect access
-app.use('*', (req, res) => helpers.errorHandler({status: 404, line: 45, server: true}, 'You have reached a page that does not exist.', res));
+app.use('*', (req, res) => errorHandler({status:404}, 'You have reached a page that does not exist.', res));
 
 //route callback functions
 function mainPage(req, res) {
   res.render('./index', {pageTitle: 'Beerly GF'});
 }
+
+//helper functions
+function errorHandler(error, message, res) {
+  console.error(error);
+  if(message) {
+    console.log('Error message:', message);
+    if(res){
+      res.send(message);
+    }
+  }
+}
+
+//getting the beer data from the database or the API
+function getBeer (request, response) {
+  console.log('in get beer function!!!');
+  const selectSQL = `SELECT * FROM beers WHERE style_name=$1;`;
+  const values = [request.query.data];
+
+  client.query(selectSQL, values)
+    .then(result => {
+      console.log(result);
+      if (result.rowCount > 0) {
+        response.send(result.rows[0]);
+      } else {
+        const apiURL = `https://sandbox-api.brewerydb.com/v2/beer/random?key=${process.env.API_KEY}`;
+
+        superagent.get (apiURL)
+          .then(apiData => {
+            if (!apiData.body.data.length) {
+              throw 'No Beer information available for your search criteria. Try another beer name or style. Bottoms up!';
+            } else {
+              let beer = new Beer (apiData.body.data[0], request.query);
+              let insertSQL = `INSERT INTO beers (name, beer_id, abv, style_name, style_id, time_stamp) VALUES ($1, $2, $3, $4, $5, $6);`;
+              let newValues = Object.values(beer);
+              client.query(insertSQL, newValues)
+                .then(sqlReturn => {
+                  beer.id = sqlReturn.rows[0].id;
+                  response.send(beer);
+                });
+            }
+          });
+      }
+    })
+    .catch(error => errorHandler (error));
+}
+
+//Coonstructor Function for beer
+function Beer(data) {
+  this.name = body.data.name;
+  this.beer_id = body.data.id;
+  this.abv = body.data.abv;
+  this.style_name = body.data.style.name;
+  this.style_id = body.data.style.id;
+  this.time_stamp = Date.now();
+}
+
+
+
 
