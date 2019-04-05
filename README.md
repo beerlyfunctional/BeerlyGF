@@ -1,6 +1,66 @@
 # BeerlyGF
+Brewery locator with gluten free beer information
 
-# Contact Plan
+# Project Name
+Beerly Functional
+**Authors**: Merry Cimakasky, Trey Herndon, Jesse Van Volkinburg, Juliann Talkington
+**Version**: 1.0.0 
+
+## Overview
+
+This site is being built so that users can find local breweries and as the app is populated find tasting notes on beers available at those breweries. The app has a special focus on gluten free beers, since there is limited information available about beers that meet this dietary constraint. 
+
+## Project Domain
+
+Problem. Beer drinkers need a simple way to find information on local breweries and the beers offered at those breweries. This is particularly important for beer drinkers who have allergies and sensitivities. Information on gluten free beer options is limited, so we hope to create a app with brewery information and tasting page where users can help populate information about gluten free options. 
+
+## Getting Started
+
+  step 1: Clone the repository
+  
+  step 2: Make sure npm is installed
+  
+  Step 3: In terminal/command prompt, enter 'npm i' 
+  
+  step 4: Create a '.env' file containing the following
+        PORT=[port number]      
+        DATABASE_URL=[your postgres database url (OS dependant)]
+        GOOGLE_API_KEY=[enter your key]
+        BREWERYDB_API_KEY=[enter your key]    
+
+  step 5: Run nodemon and test routes and outputs.
+  
+  step 6: deploy to a online service like heroku if desired. make sure to add postgres to online service as well
+
+## Architecture
+
+Technologies used:
+
+  - JavaScript
+  - node.js
+  - express
+  - dotEnv
+  - superagent
+  - PostgreSQL
+  - pg 
+
+## Wireframes and Planning
+
+The group used two daily standups to aid with group communication.
+
+The group planned with github project management tool and whiteboarding. The wireframes and daily whiteboard planning can be found in the wireframes_daily_workflow directory. 
+
+The github project management can be found at https://github.com/orgs/beerlyfunctional/dashboard.
+
+## Credits and Collaborations
+
+Jagdeep Singh, Trey Herndon, Bonnie Wang, Juliann Talkington
+
+-->
+Credit should be given to CodeFellows for providing all of the frontend javascript, html, and CSS. CodeFellows also gave guidance on the creation of the backend portion.
+
+
+# Communication Plan
 
 Team Hours: 
 
@@ -56,24 +116,20 @@ What constitutes agreement on an issue?
 majority rule
 If someone feels strongly about something, we would hear the other person out before making a decision.
 
-# Scope Document 
+# Project Scope
 
 ## MVP
 Page One: IDX - form/buttons, Search bar 
 Page Two: Search Results 
 Page Three: Details +save 
 Page Four: Saved Beers 
+**Page Five: About Page (added 4/4/19 at request of DC, originally a scroll down on page 1)
 
 ## Stretch Goals 
 Circle search 
 Google maps API "where to find", Zomato as well?  
 Food Pairings (Additional API?) 
 2 week stretch: auth for untapped users 
-
-
-About Me: 
-
-
 
 
 Picture Sources:
