@@ -42,6 +42,9 @@
   grid-row: 1/2;
   grid-column: 3/4;
 }
+#ex {
+  width: 10px;
+}
 /*Search section*/
 .search-section {
   grid-row: 1/2;
@@ -54,8 +57,10 @@
 }
 #search-bar {
   margin-bottom: 15px;
-  margin-left: auto;
-  margin-right: auto;
+  margin-left: 50px;
+}
+#button {
+  margin-left: 100px;
 }
 
 /*About area*/
