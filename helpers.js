@@ -205,7 +205,7 @@ function beers(request, response) {
   // let sql = `SELECT * FROM beers WHERE id=$1;`;
   let beer, reviewsArray;
 
-  let sql = `SELECT breweries.brewery breweryname, breweries.website website, breweries.image image, beers.id beerid, beers.name beername, beers.abv beerabv, beers.ibu beeribu, styles.name stylename, styles.description styledesc, styles.abvmin abvmin, styles.abvmax abvmax, styles.ibumin ibumin, styles.ibumax ibumax
+  let sql = `SELECT breweries.brewery breweryname, breweries.website website, breweries.image image, beers.beer_id beerid, beers.name beername, beers.abv beerabv, beers.ibu beeribu, styles.name stylename, styles.description styledesc, styles.abvmin abvmin, styles.abvmax abvmax, styles.ibumin ibumin, styles.ibumax ibumax
   FROM beers
   INNER JOIN breweries ON beers.brewery_id = breweries.id
   INNER JOIN styles ON beers.style_id = styles.id
@@ -217,14 +217,14 @@ function beers(request, response) {
 
       beer = beerResult.rows[0];
       sql = `SELECT * FROM reviews WHERE beer_id=$1;`;
-
-      return client.query(sql, [beer.id]);
+      return client.query(sql, [beer.beerid]);
     })
     .then(reviewsResult => {
       if (reviewsResult.rowCount === 0) reviewsArray = [];
       else reviewsArray = reviewsResult.rows;
-      // console.log(beer, '\n\n\n', reviewsArray);
-      // response.render('./PlaceHolderPage.ejs', {beer: beer, reviews: reviewsArray});
+      // console.log(`${beer}\n\n\n ${reviewsArray}`);
+      console.log(reviewsResult.rows[0], request.params.beer_id);
+      response.render('pages/beerdetails', {beer: beer, reviews: reviewsArray});
     })
     .catch(error => errorHandler(error));
 }
@@ -232,13 +232,21 @@ function beers(request, response) {
 //update a beer entry w/ a comment
 
 function review(request, response){
-  let {id, beer_id, note, rating, time_stamp, gf} = request.body;
+  // let {beer_id, note, rating, time_stamp, gf} = request.body;
+  console.log(request.body);
 
-  let sql = `INSERT INTO reviews(id, beer_id, note, rating, time_stamp, gf) VALUES($1, $2, $3, $4, $5, $6);`;
-  let values = [id, beer_id, note, rating, time_stamp, gf];
+  let review = new constructor.Review(request.body);
+
+  let sql = `INSERT INTO reviews(beer_id, note, rating, time_stamp, gf) VALUES($1, $2, $3, $4, $5) RETURNING id;`;
+  let values = Object.values(review);
+  console.log(values);
+  console.log(review);
 
   client.query(sql, values)
-    .then(response.redirect(`/beers/${request.params.beer_id}`))
+    .then(result => {
+      console.log(result.rows[0].id);
+      response.redirect(`/beers/${request.params.beer_id}`);
+    })
     .catch(error => errorHandler(error));
 }
 
@@ -247,9 +255,10 @@ function review(request, response){
 function removeReview(request, response){
   let sql = `DELETE FROM reviews WHERE id=$1`;
   let values = [request.params.review_id];
+  console.log(request.body);
 
   client.query(sql, values)
-    .then(response.redirect(`beers/${request.params.beer_id}`))
+    .then(response.redirect(`/beers/${request.params.beer_id}`))
     .catch(errorHandler);
 
 }
