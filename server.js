@@ -41,6 +41,10 @@ app.get('/seeddb', helpers.seed);
 app.post('/beers/:beer_id', helpers.review);
 app.delete('/beers/:beer_id', helpers.removeReview);
 app.get('/shelf/:beer_id', helpers.shelf);
+app.get('/location', helpers.getLocation);
+app.get('/breweries', helpers.getBreweries);
+// app.get('/beers', helpers.getBeers);
+// app.get('/styles', helpers.getStyles);
 
 //generic route for all incorrect access
 app.use('*', (req, res) => helpers.errorHandler({status: 404, line: 45, server: true}, 'You have reached a page that does not exist.', res));
