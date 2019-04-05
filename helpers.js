@@ -352,23 +352,18 @@ function getBreweries (request, response) {
   let location = request.query.location;
   location=1;
 
-  // let sql = `SELECT * FROM breweries WHERE location_id=$1;`;
-  // let values = [location];
-  let url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=47.6089620,-122.3340670&key=AIzaSyCAPdUyklEipAHaAi3MhLjJuF5WaxlXVzA`;
-  let testvalue = superagent.get(url).catch(errorHandler);
-  Promise.resolve(testvalue);
-
-
-  // client.query(sql, values)
-  //   .then(breweriesResult => {
-  //     if (breweriesResult.rowCount === 0) {
-  //       // TODO: get data from api
-  //     }
-  //     else {
-  //       response.send(breweriesResult.rows);
-  //     }
-  //   })
-  //   .catch(error => errorHandler(error));
+  let sql = `SELECT * FROM breweries WHERE location_id=$1;`;
+  let values = [location];
+  client.query(sql, values)
+    .then(breweriesResult => {
+      if (breweriesResult.rowCount === 0) {
+        // TODO: get data from api
+      }
+      else {
+        response.send(breweriesResult.rows);
+      }
+    })
+    .catch(error => errorHandler(error));
 }
 
 function getBeers (request, response) {
