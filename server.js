@@ -30,7 +30,7 @@ app.use(methodOverride(function(req, res){
 }))
 
 //turn on server to listen on PORT
-app.listen(PORT, () => console.log(`Beerly here on PORT ${PORT}`));
+app.listen(PORT, () => console.log(`\n\n**#############\n\nBeerly here on PORT ${PORT}\n\n######################**\n\n`));
 
 //server routes
 app.get('/', mainPage);
@@ -38,8 +38,8 @@ app.post('/search', helpers.search);
 app.get('/breweries/:brewery_id', helpers.breweries);
 app.get('/beers/:beer_id', helpers.beers);
 app.get('/seeddb', helpers.seed);
-app.post('/beers/:beer_id', helpers.review);
-app.delete('/beers/:beer_id/:review_id', helpers.removeReview);
+app.post('/reveiews/:beer_id', helpers.review);
+app.delete('/reveiews/:review_id', helpers.removeReview);
 app.get('/shelf/:beer_id', helpers.shelf);
 app.get('/location', helpers.getLocation);
 app.get('/breweries', helpers.getBreweries);

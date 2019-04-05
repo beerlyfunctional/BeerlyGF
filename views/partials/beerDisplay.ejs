@@ -1,6 +1,20 @@
-<h1> <% name >% </h1>
-<img>
-<p> <% style %> </p>
-<p> <% abv %> </p>
-<p> <% ibu %> </p>
-<p> <% description %> </p>
+<h1> <%= beer.beername %> </h1>
+<img src="<%= beer.image %>" >
+<p> <%= beer.stylename %> </p>
+<p> <%= beer.beerabv %> </p>
+<p> <%= beer.beeribu %> </p>
+<p> <%= beer.styledescription %> </p>
+
+<form action=/>
+  What do you think of this beer? <br> 
+  <input type="text" name="reveiew">
+  <input type=" text" name="rating"> 
+  Is it gluten free? <input type="checkbox">
+  <input type="submit" name="submit">
+</form>
+
+<% reveiews.forEach(review => { %>
+<p> <%= review.note %> </p>
+<p> <%= review.rating %> </p>
+<p> <%= review.gf %> </p>
+  <% }) %>
