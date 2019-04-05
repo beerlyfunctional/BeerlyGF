@@ -1,14 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <%- include('./partials/head.ejs', {pageTitle: pageTitle}) %>
+    <%- include('./partials/head.ejs', {pageTitle: pageTitle}) %>   
 </head>
-
 <body>
-    <%- include('./partials/header.ejs') %>
 
-    <%- include('./partials/search.ejs') %>
+    <section class="search-section"> 
+            <div id="form-div">
+                <h3>Looking for a brewery or specific beer? Type your city into the search.</h3>
+                <form action="/search" method="post">
+                    <input id="search-bar" type="text" name="query" placeholder="Search by City" required>
+                    <div id="button"><button type="submit">Search</button></div>
+                </form>
+            </div>
+    </section>
 
     <%- include('./partials/footer.ejs') %>
+
 </body>
 </html>

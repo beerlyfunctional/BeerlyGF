@@ -9,6 +9,9 @@
 # KDE directory preferences
 .directory
 
+# Kate editor temporary files
+*-swp
+
 # Linux trash folder which might appear on any partition or disk
 .Trash-*
 
