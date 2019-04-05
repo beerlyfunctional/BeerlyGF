@@ -44,8 +44,7 @@ function search(request, response) {
         let sql = `SELECT * FROM breweries WHERE location_id = $1;`;
         let values = [location.id];
 
-        client
-          .query(sql, values)
+        client.query(sql, values)
           .then(breweryResults => {
             console.log('breweryResults? 50')
             if (breweryResults.rowCount > 0) {
@@ -202,18 +201,39 @@ function breweries(request, response) {
 
   client.query(sql, [request.params.brewery_id]).then(breweryResult => {
     if (breweryResult.rowCount === 0) console.log('\n\n\nNO DATA FROM DB, BIG PROBLEMS\n\n\n');
-    // response.render('pages/breweryDetails', {breweries: breweryResult.rows});
-    response.send(breweryResult.rows);
-  }).catch(error => errorHandler(error));
+    console.log('line204');
+    response.render('pages/breweryDetails', {breweryBeers: breweryResult.rows});
+  })
+    .catch(errorHandler);
 }
 
 //fetch a single beer's details
 function beers(request, response) {
-  let sql = `SELECT * FROM beers WHERE id=$1;`;
+  // let sql = `SELECT * FROM beers WHERE id=$1;`;
+  let beer, reviewsArray;
 
-  client.query(sql [request.params.beer_id]).then(beer => {
-    return response.render('./PlaceHolderPage.ejs', {beer: beer.rows[0]});
-  }).catch(error => errorHandler(error));
+  let sql = `SELECT breweries.brewery breweryname, breweries.website website, breweries.image image, beers.id beerid, beers.name beername, beers.abv beerabv, beers.ibu beeribu, styles.name stylename, styles.description styledesc, styles.abvmin abvmin, styles.abvmax abvmax, styles.ibumin ibumin, styles.ibumax ibumax
+  FROM beers
+  INNER JOIN breweries ON beers.brewery_id = breweries.id
+  INNER JOIN styles ON beers.style_id = styles.id
+  WHERE beers.beer_id=$1;`;
+
+  client.query(sql, [request.params.beer_id])
+    .then(beerResult => {
+      if (beerResult.rowCount === 0) throw 'NO INFO IN DB';
+
+      beer = beerResult.rows[0];
+      sql = `SELECT * FROM reviews WHERE beer_id=$1;`;
+
+      return client.query(sql, [beer.id]);
+    })
+    .then(reviewsResult => {
+      if (reviewsResult.rowCount === 0) reviewsArray = [];
+      else reviewsArray = reviewsResult.rows;
+      // console.log(beer, '\n\n\n', reviewsArray);
+      // response.render('./PlaceHolderPage.ejs', {beer: beer, reviews: reviewsArray});
+    })
+    .catch(error => errorHandler(error));
 }
 
 //update a beer entry w/ a comment
@@ -224,7 +244,7 @@ function review(request, response){
   let sql = `INSERT INTO reviews(id, beer_id, note, rating, time_stamp, gf) VALUES($1, $2, $3, $4, $5, $6);`;
   let values = [id, beer_id, note, rating, time_stamp, gf];
 
-  return client.query(sql, values)
+  client.query(sql, values)
     .then(response.redirect(`/beers/${request.params.beer_id}`))
     .catch(error => errorHandler(error));
 }
@@ -235,7 +255,7 @@ function removeReview(request, response){
   let sql = `DELETE FROM reviews WHERE id=$1`;
   let values = [request.params.review_id];
 
-  return client.query(sql, values)
+  client.query(sql, values)
     .then(response.redirect(`beers/${request.params.beer_id}`))
     .catch(errorHandler);
 
