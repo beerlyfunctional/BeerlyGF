@@ -194,16 +194,16 @@ function getBreweriesWeWantToRender(breweries, location, response) {
 
 //fetch breweries and their beer list
 function breweries(request, response) {
-  let sql = `SELECT * FROM breweries WHERE id=$1;`;
-  let beersql = `SELECT * FROM beers WHERE brewery_id=$1;`;
+  let sql = `SELECT breweries.id breweryid, breweries.brewery breweryname, breweries.website website, breweries.image breweryimage, beers.beer_id beerid, beers.name beername, beers.abv beerabv, styles.name stylename
+  FROM breweries
+  INNER JOIN beers ON beers.brewery_id = breweries.id
+  INNER JOIN styles ON beers.style_id = styles.id
+  WHERE breweries.id=$1;`;
 
   client.query(sql, [request.params.brewery_id]).then(breweryResult => {
-    client.query(beersql, [request.params.brewery_id]).then(beerResult =>{
-      if(breweryResult.rows.length < 1){
-        return response.render('./pages/error.ejs', {message: 'I am so sorry, this brewery was not found.'})
-      }
-      return response.render('./MKCbreweries.ejs', {brewery: breweryResult.rows[0], beers: beerResult.rows});
-    }).catch(error => errorHandler(error));
+    if (breweryResult.rowCount === 0) console.log('\n\n\nNO DATA FROM DB, BIG PROBLEMS\n\n\n');
+    // response.render('pages/breweryDetails', {breweries: breweryResult.rows});
+    response.send(breweryResult.rows);
   }).catch(error => errorHandler(error));
 }
 
@@ -219,25 +219,25 @@ function beers(request, response) {
 //update a beer entry w/ a comment
 
 function review(request, response){
-  let {id, beer_id, note, rating, time_stamp, gf} = request.body
+  let {id, beer_id, note, rating, time_stamp, gf} = request.body;
 
-  let SQL = `INSERT INTO reviews(id, beer_id, note, rating, time_stamp, gf) VALUES($1, $2, $3, $4, $5, $6);`;
+  let sql = `INSERT INTO reviews(id, beer_id, note, rating, time_stamp, gf) VALUES($1, $2, $3, $4, $5, $6);`;
   let values = [id, beer_id, note, rating, time_stamp, gf];
 
-  return client.query(SQL, values)
-    .then(response.redirect('/beers/:beer_id'))
-    .catch(error => errorHandler(error))
+  return client.query(sql, values)
+    .then(response.redirect(`/beers/${request.params.beer_id}`))
+    .catch(error => errorHandler(error));
 }
 
 //delete a comment
 
 function removeReview(request, response){
-  let SQL = `DELETE FROM reviews WHERE id=$q`;
-  let values = [request.params.id];
+  let sql = `DELETE FROM reviews WHERE id=$1`;
+  let values = [request.params.review_id];
 
-  return client.query(SQL, values)
-    .then(response.redirect('/beers/:beer_id'))
-    .catch(error => errorHandler(error));
+  return client.query(sql, values)
+    .then(response.redirect(`beers/${request.params.beer_id}`))
+    .catch(errorHandler);
 
 }
 
@@ -354,11 +354,10 @@ function getBreweries (request, response) {
 
   let sql = `SELECT * FROM breweries WHERE location_id=$1;`;
   let values = [location];
-
   client.query(sql, values)
     .then(breweriesResult => {
       if (breweriesResult.rowCount === 0) {
-        // get data from api
+        // TODO: get data from api
       }
       else {
         response.send(breweriesResult.rows);
