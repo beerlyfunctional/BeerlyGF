@@ -1,8 +1,10 @@
 //Running a test on Seattle Washington
 
-let popup, Popup; 
+let popup, Popup, breweries;
 // let location = require('../server.js');
 // console.log(location);
+
+
 
 function initMap() {
   let map = new google.maps.Map(document.getElementById('beer-map'), {
@@ -12,37 +14,38 @@ function initMap() {
   });
 
   //bottle image
-  let image = './img/label_bottle.png';
+  let image = '/img/label_bottle.png'; 
 
-  //brewery.map(element =>{
-  // let beerMarker = new google.maps.Marker({
-  //   position: {lat: element.lat, lng: element.lng},
-  //   map: map,
-  //   icon: image
-  // });
-
-  //initializes the popup
-  // Popup = createPopupClass();
-  // let popUpLat = element.lat + 0.012;
-  // popup = new Popup(
-  //   new google.maps.LatLng(popUpLat, element.lng),
-  //   document.getElementById('content'));
-  // popup.setMap(map);
-
-  //})
-  let beerMarker = new google.maps.Marker({
-    //this will be tied to the brewery locations we pull from beerDB
-    position: {lat: 47.580, lng: -122.402},
-    map: map,
-    icon: image
+  breweries.forEach(element =>{
+    let beerMarker = new google.maps.Marker({
+      position: {lat: element.lat, lng: element.lng},
+      map: map,
+      icon: image
+    });
   });
 
   //initializes the popup
   Popup = createPopupClass();
+  let popUpLat = element.lat + 0.012;
   popup = new Popup(
-    new google.maps.LatLng(47.592, -122.402),
+    new google.maps.LatLng(popUpLat, element.lng),
     document.getElementById('content'));
   popup.setMap(map);
+
+  // //})
+  // let beerMarker = new google.maps.Marker({
+  //   //this will be tied to the brewery locations we pull from beerDB
+  //   position: {lat: 47.580, lng: -122.402},
+  //   map: map,
+  //   icon: image
+  // });
+
+  // //initializes the popup
+  // Popup = createPopupClass();
+  // popup = new Popup(
+  //   new google.maps.LatLng(47.592, -122.402),
+  //   document.getElementById('content'));
+  // popup.setMap(map);
 
 }
 

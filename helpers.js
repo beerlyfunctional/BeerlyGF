@@ -79,11 +79,11 @@ function search(request, response) {
                     client.query(sql, values)
                       .then(breweryQueryResult => {
                         // this is where the brewery gets returned for the map method
-                        getBreweriesWeWantToRender(breweryQueryResult, response);
+                        getBreweriesWeWantToRender(breweryQueryResult, location, response);
                       })
                       .catch(error => errorHandler(error));
                   });
-                  // response.send(location);
+                 
                 })
                 .catch(error => errorHandler(error));
             }
@@ -124,7 +124,7 @@ function search(request, response) {
                       if (breweryResults.rowCount > 0) {
 
                         breweries = breweryResults.rows;
-                        // response.send(location);
+                        getBreweriesWeWantToRender(breweries, location, response);
 
                       } else { // get breweries from API
 
@@ -156,7 +156,7 @@ function search(request, response) {
                                 .catch(error => errorHandler(error));
                             });
                             // THis is where the data gets sent back tothe front end. IT might work elsewhere, but this works for now.
-                            response.send(location);
+                            getBreweriesWeWantToRender(breweries, location, response)
                           })
                           .catch(error => errorHandler(error));
                       }
@@ -174,9 +174,9 @@ function search(request, response) {
 }
 
 //render map
-function getBreweriesWeWantToRender(breweryApiResults, response) {
+function getBreweriesWeWantToRender(breweries, location, response) {
   //every brewery on the map needs to have beers avaliable
-  let breweryArray = [];
+  let breweryArray = breweries;
   console.log('finding breweries with beer 178')
   // breweryApiResults.rows.forEach(brewery => {
   //   let url = `https://api.brewerydb.com/v2/brewery/${brewery.id}/beers?key=${BREWERYDB_API_KEY};`
@@ -189,7 +189,7 @@ function getBreweriesWeWantToRender(breweryApiResults, response) {
   //   console.log(brewery);
   //   breweryArray.push(brewery);
   // })
-  response.render('search', {breweries: breweryArray})
+  response.render('search', {location:location, breweries: breweryArray})
 }
 //
 
