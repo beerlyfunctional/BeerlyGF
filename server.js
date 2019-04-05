@@ -43,6 +43,7 @@ app.delete('/beers/:beer_id/:review_id', helpers.removeReview);
 app.get('/shelf/:beer_id', helpers.shelf);
 app.get('/location', helpers.getLocation);
 app.get('/breweries', helpers.getBreweries);
+app.get('/about', (request, response) => response.render())
 // app.get('/beers', helpers.getBeers);
 // app.get('/styles', helpers.getStyles);
 
