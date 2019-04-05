@@ -7,30 +7,57 @@ let popup, Popup, breweries;
 
 
 function initMap() {
+  console.log(breweries)
   let map = new google.maps.Map(document.getElementById('beer-map'), {
     zoom: 12,
     //we need to make this dynamic
     center: {lat: 47.608013, lng: -122.335167}
   });
+  $.ajax({
+    url: '/breweries',
+    type: 'GET',
+    success: function(breweries) {
+      console.log(breweries, '🙈');
+      //bottle image
+      let image = './img/beerMarker.png';
 
-  //bottle image
-  let image = '/img/label_bottle.png'; 
+      breweries.forEach(element =>{
+        console.log('-----------------------------')
+        console.log(element)
+        let beerMarker = new google.maps.Marker({
+          position: {lat: parseFloat(element.lat), lng: parseFloat( element.long)},
+          map: map,
+          icon: image
+        });
 
-  breweries.forEach(element =>{
-    let beerMarker = new google.maps.Marker({
-      position: {lat: element.lat, lng: element.lng},
-      map: map,
-      icon: image
-    });
+        let infowindow = new google.maps.InfoWindow({
+          content: `${element.brewery}`
+        });
+
+        // infowindow.open(map, beerMarker);
+
+        var previousMarker = false; 
+
+        google.maps.event.addListener(beerMarker, 'click', function() {
+          if(previousMarker){
+            previousMarker.close();
+          }
+          infowindow.open(map, beerMarker);
+          previousMarker = infowindow;
+        })
+        //initializes the popup
+        // Popup = createPopupClass();
+        // let popUpLat = element.lat + 0.012;
+        // popup = new Popup(
+        //   new google.maps.LatLng(popUpLat, element.lng),
+        //   document.getElementById('content'));
+        //   console.log(document.createElement('div'))
+        // popup.setMap(map);
+        beerMarker.setMap(map);
+      });
+    }
   });
 
-  //initializes the popup
-  Popup = createPopupClass();
-  let popUpLat = element.lat + 0.012;
-  popup = new Popup(
-    new google.maps.LatLng(popUpLat, element.lng),
-    document.getElementById('content'));
-  popup.setMap(map);
 
   // //})
   // let beerMarker = new google.maps.Marker({

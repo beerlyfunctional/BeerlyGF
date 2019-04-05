@@ -93,7 +93,6 @@ function search(request, response) {
       } else {
         //console.log('No SQL result, going to geocode API');
         let url = `https://maps.googleapis.com/maps/api/geocode/json?key=${process.env.GOOGLE_API_KEY}&address=${city}`;
-        console.log(url)
         superagent
           .get(url)
           .then(data => {
