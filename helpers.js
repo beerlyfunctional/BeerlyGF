@@ -321,42 +321,40 @@ function seed(req, res) {
 
 function getLocation(request, response) {
   let search_query = request.query.search_query;
-  search_query='portland';
+  search_query='seattle';
   let sql = `SELECT * FROM locations WHERE search_query=$1;`;
   let values = [search_query];
-  
-  client.query(sql, values)
+
+  client
+    .query(sql, values)
     .then(result => {
       if (result.rowCount === 0){
         let url = `https://maps.googleapis.com/maps/api/geocode/json?key=${process.env.GOOGLE_API_KEY}&address=${city}`;
         console.log(url)
-        superagent
-          .get(url)
-          .then(data => {
-            // console.log('🗺 from the googs');
-            if (!data.body.results.length) {
-              errorHandler({ status: 404, line: 100 }, 'Google API not returning any data. Please check your input', response);
-              throw 'Where are we??? Nothing back from GeoCodeAPI';
-            } else {
-
-              location = new constructor.Location(data.body.results[0].geometry.location, city);
-
-              let sql = `INSERT INTO locations(search_query, lat, long) VALUES($1, $2, $3) RETURNING *;`;
-              let values = Object.values(location);
-              client
-                .query(sql, values)
-                .then(locationResult => {
-                  location = locationResult.rows[0]; 
-                  response.send(result.rows[0]);
-                })
-                .catch(error => errorHandler(error));
-            }
-          })
-          .catch(error => errorHandler(error));
+        // return next async call to promise chain
+        return superagent.get(url);
+      } else {
+        response.send(result.rows[0]);
       }
+    })
+    .then(data => {
+      // console.log('🗺 from the googs');
+      if (!data.body.results.length) {
+        errorHandler({ status: 404, line: 100 }, 'Google API not returning any data. Please check your input', response);
+        throw 'Where are we??? Nothing back from GeoCodeAPI';
+      } else {
+
+        location = new constructor.Location(data.body.results[0].geometry.location, city);
+
+        let sql = `INSERT INTO locations(search_query, lat, long) VALUES($1, $2, $3) RETURNING *;`;
+        let values = Object.values(location);
+        return client.query(sql, values);
+      }})
+    .then(locationResult => {
+      location = locationResult.rows[0];
       response.send(result.rows[0]);
     })
-    .catch(error => errorHandler(error));
+    .catch(errorHandler);
 }
 
 function getBreweries (request, response) {
