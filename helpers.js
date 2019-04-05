@@ -50,9 +50,8 @@ function search(request, response) {
             console.log('breweryResults? 50')
             if (breweryResults.rowCount > 0) {
 
-              breweries = breweryResults.rows;
               // response.send(location);
-              getBreweriesWeWantToRender(breweryResults, location, response);
+              getBreweriesWeWantToRender(breweryResults.rows, response);
 
             } else { // get breweries from API
 
@@ -80,7 +79,7 @@ function search(request, response) {
                       .then(breweryQueryResult => {
                         console.log(breweryQueryResult.rowCount, `🙈`)
                         // this is where the brewery gets returned for the map method
-                        getBreweriesWeWantToRender(breweryQueryResult, response);
+                        getBreweriesWeWantToRender(breweryQueryResult.rows, response);
                       })
                       .catch(error => {
                         console.log(`/n/n !@# brewery results error`, error)
@@ -127,7 +126,7 @@ function search(request, response) {
                       if (breweryResults.rowCount > 0) {
 
                         breweries = breweryResults.rows;
-                        getBreweriesWeWantToRender(breweries, location, response);
+                        getBreweriesWeWantToRender(breweries, response);
 
                       } else { // get breweries from API
 
@@ -326,42 +325,40 @@ function seed(req, res) {
 
 function getLocation(request, response) {
   let search_query = request.query.search_query;
-  search_query='portland';
+  search_query='seattle';
   let sql = `SELECT * FROM locations WHERE search_query=$1;`;
   let values = [search_query];
 
-  client.query(sql, values)
+  client
+    .query(sql, values)
     .then(result => {
       if (result.rowCount === 0){
         let url = `https://maps.googleapis.com/maps/api/geocode/json?key=${process.env.GOOGLE_API_KEY}&address=${city}`;
-       
-        superagent
-          .get(url)
-          .then(data => {
-           
-            if (!data.body.results.length) {
-              errorHandler({ status: 404, line: 100 }, 'Google API not returning any data. Please check your input', response);
-              throw 'Where are we??? Nothing back from GeoCodeAPI';
-            } else {
-
-              location = new constructor.Location(data.body.results[0].geometry.location, city);
-
-              let sql = `INSERT INTO locations(search_query, lat, long) VALUES($1, $2, $3) RETURNING *;`;
-              let values = Object.values(location);
-              client
-                .query(sql, values)
-                .then(locationResult => {
-                  location = locationResult.rows[0];
-                  response.send(result.rows[0]);
-                })
-                .catch(error => errorHandler(error));
-            }
-          })
-          .catch(error => errorHandler(error));
+        console.log(url)
+        // return next async call to promise chain
+        return superagent.get(url);
+      } else {
+        response.send(result.rows[0]);
       }
-      response.send(result.rows[0]);
     })
-    .catch(error => errorHandler(error));
+    .then(data => {
+      // console.log('🗺 from the googs');
+      if (!data.body.results.length) {
+        errorHandler({ status: 404, line: 100 }, 'Google API not returning any data. Please check your input', response);
+        throw 'Where are we??? Nothing back from GeoCodeAPI';
+      } else {
+
+        location = new constructor.Location(data.body.results[0].geometry.location, city);
+
+        let sql = `INSERT INTO locations(search_query, lat, long) VALUES($1, $2, $3) RETURNING *;`;
+        let values = Object.values(location);
+        return client.query(sql, values);
+      }})
+    .then(locationResult => {
+      location = locationResult.rows[0];
+      response.send(location);
+    })
+    .catch(errorHandler);
 }
 
 function getBreweries (request, response) {
