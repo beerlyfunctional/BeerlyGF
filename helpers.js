@@ -271,45 +271,57 @@ function seed(req, res) {
       if (!result.rowCount) throw 'All broken, stop now';
       location = result.rows[0];
 
+      const brewerySeed = require('./data/breweries-seattle.json').data;
       const breweryArray = brewerySeed
         .filter(brewery => brewery.openToPublic === 'Y')
         .map(element => {
+
           let brewery = new constructor.Brewery(element);
           brewery.location_id = location.id;
+
           let sql = `INSERT INTO breweries(id, brewery, website, image, lat, long, time_stamp, location_id) VALUES($1,$2,$3,$4,$5,$6,$7,$8) ON CONFLICT DO NOTHING;`;
           let values = Object.values(brewery);
+
           client.query(sql, values)
-            .catch(error => errorHandler(error));
+            .catch(errorHandler);
           //.log('🍺 Insert Complete');
           return brewery;
         });
 
       const styles = require('./data/styles.json').data;
       const styleArray = styles.map(style => {
+
         let thisStyle = new constructor.Style(style);
+
         let sql = `INSERT INTO styles(id, name, description, abvmin, abvmax, ibumin, ibumax, time_stamp) VALUES ($1,$2,$3,$4,$5,$6,$7,$8) ON CONFLICT DO NOTHING;`;
         let values = Object.values(thisStyle);
+
         client.query(sql, values)
-          .catch(error => errorHandler(error));
+          .catch(errorHandler);
+        //console.log('Style Insert Complete');
         return thisStyle;
       });
 
-      const beerSeed = require('./data/ale.json').data;
-      const beerArray = beerSeed.map(element => {
-        let beer = new constructor.Beer(element);
-        let sql = `INSERT INTO beers(name, beer_id, abv, ibu, time_stamp, style_id, brewery_id) VALUES($1,$2,$3,$4,$5,$6,$7) ON CONFLICT DO NOTHING;`;
-        let values = Object.values(beer);
-        
-        client.query(sql, values)
-          .catch(error => errorHandler(error));
-   
-        return beer;
+      let beerSeed, beerArray;
+      breweryArray.forEach(brewery => {
+
+        beerSeed = require(`./data/${brewery.id}.json`).data;
+        beerArray = beerSeed.map(element => {
+
+          let beer = new constructor.Beer(element);
+
+          let sql = `INSERT INTO beers(name, beer_id, abv, ibu, time_stamp, style_id, brewery_id) VALUES($1,$2,$3,$4,$5,$6,$7) ON CONFLICT DO NOTHING;`;
+          let values = Object.values(beer);
+          
+          client.query(sql, values)
+            .catch(errorHandler);
+          return beer;
+        });
       });
       res.render('pages/datadisplay', { breweries: breweryArray, styles: styleArray, beers: beerArray });
     })
-    .catch(error => errorHandler(error));
+    .catch(errorHandler);
 
-  const brewerySeed = require('./data/breweries-seattle.json').data;
 }
 
 function getLocation(request, response) {
