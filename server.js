@@ -30,7 +30,7 @@ app.use(methodOverride(function(req, res){
 }))
 
 //turn on server to listen on PORT
-app.listen(PORT, () => console.log(`Beerly here on PORT ${PORT}`));
+app.listen(PORT, () => console.log(`\n\n**#############\n\nBeerly here on PORT ${PORT}\n\n######################**\n\n`));
 
 //server routes
 app.get('/', mainPage);

@@ -23,8 +23,8 @@ function Style(input) {
 
 function Brewery(input) {
   this.id = input.id;
-  this.brewery = input.brewery.name;
-  this.website = input.brewery.website ? input.brewery.website : '';
+  this.brewery = input.brewery ? input.brewery.name : 'Not Avaliable';
+  this.website = input.brewery.website ? input.brewery.website : 'Not Avaliable';
   this.image = input.brewery.images ? input.brewery.images.squareMedium.replace(/http:\/\//i, 'https://') : '/img/alcohol-alcoholic-beer-1161466.jpg';
   this.lat = input.latitude;
   this.long = input.longitude;
