@@ -1,10 +1,10 @@
 'use strict';
+require('dotenv').config();
 
 //server requirements (packages)
 const express = require('express');
 
 const methodOverride = require('method-override');
-require('dotenv').config();
 
 const helpers = require('./helpers.js');
 

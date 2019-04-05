@@ -1,8 +1,8 @@
+require('dotenv').config();
 var location = {};
 
 const superagent = require('superagent');
 const constructor = require('./constructor.js');
-require('dotenv').config();
 //console.log(process.env.PORT);
 //get that client realness
 
@@ -47,7 +47,7 @@ function search(request, response) {
         client
           .query(sql, values)
           .then(breweryResults => {
-            console.log('breweryResults?')
+            console.log('breweryResults? 50')
             if (breweryResults.rowCount > 0) {
 
               breweries = breweryResults.rows;
@@ -56,8 +56,8 @@ function search(request, response) {
 
             } else { // get breweries from API
 
-              const url = `https://api.brewerydb.com/v2/search/geo/point?lat=${location.lat}&lng=${location.long}&key=${process.env.BREWERYDB_API_KEY}&radius=20`;
-
+              let url = `https://api.brewerydb.com/v2/search/geo/point?lat=${location.lat}&lng=${location.long}&key=${process.env.BREWERYDB_API_KEY}&radius=20`;
+              console.log(url, '50')
               superagent.get(url)
                 .then(breweryResults => {
                   // console.log('in superagent');
@@ -69,12 +69,13 @@ function search(request, response) {
 
                     let sql = `INSERT INTO breweries(id, brewery, website, image, lat, long, time_stamp) VALUES($1, $2, $3, $4, $5, $6, $7) ON CONFLICT DO NOTHING;`;
                     let values = Object.values(brewery);
+                    console.log('\n\n#################', values, '72')
 
                     client.query(sql, values)
                       .catch(error => errorHandler(error));
 
                     sql = `SELECT * FROM breweries WHERE id=$1;`;
-                    values = Object.values(brewery.id);
+                    values = [brewery.id];
                     client.query(sql, values)
                       .then(breweryQueryResult => {
                         // this is where the brewery gets returned for the map method
@@ -91,7 +92,8 @@ function search(request, response) {
 
       } else {
         //console.log('No SQL result, going to geocode API');
-        const url = `https://maps.googleapis.com/maps/api/geocode/json?key=${process.env.GOOGLE_API_KEY}&address=${city}`;
+       let url = `https://maps.googleapis.com/maps/api/geocode/json?key=${process.env.GOOGLE_API_KEY}&address=${city}`;
+        console.log(url)
         superagent
           .get(url)
           .then(data => {
@@ -174,25 +176,22 @@ function search(request, response) {
 //render map
 function getBreweriesWeWantToRender(breweryApiResults, response) {
   //every brewery on the map needs to have beers avaliable
-  let url = `https://api.brewerydb.com/v2/brewery/${brewery.id}/beers?key=${BREWERYDB_API_KEY};`
   let breweryArray = [];
-
-  breweryApiResults.rows.forEach(brewery => {
-    // superagent.get(url)
-    //   .then( beers => {
-    //     if(beers.body.data){
-    //       breweryArray.push(brewery);
-    //     }
-    //   }).catch(error => errorHandler(error))
-    console.log(brewery);
-    breweryArray.push(brewery);
-  })
-  response.render('/search', {breweries: breweryArray})
+  console.log('finding breweries with beer 178')
+  // breweryApiResults.rows.forEach(brewery => {
+  //   let url = `https://api.brewerydb.com/v2/brewery/${brewery.id}/beers?key=${BREWERYDB_API_KEY};`
+  //   // superagent.get(url)
+  //   //   .then( beers => {
+  //   //     if(beers.body.data){
+  //   //       breweryArray.push(brewery);
+  //   //     }
+  //   //   }).catch(error => errorHandler(error))
+  //   console.log(brewery);
+  //   breweryArray.push(brewery);
+  // })
+  response.render('search', {breweries: breweryArray})
 }
 //
-function haveBeer(request, response){
-
-}
 
 //fetch breweries and their beer list
 function breweries(request, response) {
