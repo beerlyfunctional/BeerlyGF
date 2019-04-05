@@ -1,21 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <%- include('./partials/head.ejs', {pageTitle: pageTitle}) %>   
+    <%- include('./partials/head.ejs', {pageTitle: 'index'}) %>   
 </head>
 <body>
+    <%- include('./partials/header.ejs') %>
+
+    <main class="grid-container">
+
+    <h1 id="pageTitle">Beerly Functional Brew Search!</h1>
 
     <section class="search-section"> 
             <div id="form-div">
-                <h3>Looking for a brewery or specific beer? Type your city into the search.</h3>
-                <form action="/search" method="post">
+                <h3 id="formHead">Looking for a brewery or specific beer? Type your city into the search.</h3>
+                <form id="form" action="/search" method="post">
                     <input id="search-bar" type="text" name="query" placeholder="Search by City" required>
-                    <div id="button"><button type="submit">Search</button></div>
+                    <div id="button"><button id="searchButton" type="submit">Search</button></div>
                 </form>
             </div>
     </section>
 
-    <%- include('./partials/footer.ejs') %>
+    
+<div  id='seas' class="brewLogoDiv"
+>
+    <img class="brewLogo" src='/img/7Seas.png'>
+</div>
+<div  id='wSea' class="brewLogoDiv"
+>
+    <img class="brewLogo" src='/img/wSeaBrew.jpeg'>
+</div>
+<div id='fremont' class="brewLogoDiv"
+>
+    <img class="brewLogo" src='/img/Fremont-Brewing-logo.png'>
+</div>
+<div id='pike' class="brewLogoDiv"
+>
+    <img class="brewLogo" src='/img/pikeBrewing.png'>
+</div>
+<div id='gFish' class="brewLogoDiv"
+>
+    <img class="brewLogo" src='/img/ghostFish.png'>
+</div>
+<div  id='elliot' class="brewLogoDiv"
+>
+    <img class="brewLogo" src='/img/elliotBay.png'>
+</div>
 
+    <%- include('./partials/footer.ejs') %>
+    </main>
 </body>
 </html>
