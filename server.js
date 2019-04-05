@@ -39,7 +39,7 @@ app.get('/breweries/:brewery_id', helpers.breweries);
 app.get('/beers/:beer_id', helpers.beers);
 app.get('/seeddb', helpers.seed);
 app.post('/beers/:beer_id', helpers.review);
-app.delete('/beers/:beer_id', helpers.removeReview);
+app.delete('/beers/:beer_id/:review_id', helpers.removeReview);
 app.get('/shelf/:beer_id', helpers.shelf);
 app.get('/location', helpers.getLocation);
 app.get('/breweries', helpers.getBreweries);
