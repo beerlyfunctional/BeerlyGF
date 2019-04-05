@@ -31,7 +31,7 @@ function initMap() {
         });
 
         let infowindow = new google.maps.InfoWindow({
-          content: `${element.brewery}`
+          content: `${element.brewery}, /<a href = '/breweries/${element.id}'> View more info! </a>`
         });
 
         // infowindow.open(map, beerMarker);
