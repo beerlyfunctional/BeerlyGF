@@ -1,6 +1,8 @@
+require('dotenv').config();
+var location = {};
+
 const superagent = require('superagent');
 const constructor = require('./constructor.js');
-require('dotenv').config();
 //console.log(process.env.PORT);
 //get that client realness
 
@@ -28,7 +30,7 @@ function search(request, response) {
   let values = [city];
   let sql = `SELECT * FROM locations WHERE search_query=$1;`;
 
-  let location;
+
   let breweries;
   client
     .query(sql, values)
@@ -45,41 +47,43 @@ function search(request, response) {
         client
           .query(sql, values)
           .then(breweryResults => {
-            console.log('breweryResults?')
+            console.log('breweryResults? 50')
             if (breweryResults.rowCount > 0) {
 
               breweries = breweryResults.rows;
-              response.send(location);
+              // response.send(location);
+              getBreweriesWeWantToRender(breweryResults, location, response);
 
             } else { // get breweries from API
 
-              const url = `https://sandbox-api.brewerydb.com/v2/search/geo/point?lat=${location.lat}&lng=${location.long}&key=${process.env.BREWERYDB_API_KEY}&radius=20`;
-
+              let url = `https://api.brewerydb.com/v2/search/geo/point?lat=${location.lat}&lng=${location.long}&key=${process.env.BREWERYDB_API_KEY}&radius=20`;
+              console.log(url, '50')
               superagent.get(url)
                 .then(breweryResults => {
                   // console.log('in superagent');
                   if (!breweryResults.body.data) {
-                    return errorHandler({ status: 404 }, 'No data from brewerydb', response);
+                    return errorHandler({ status: 404, line: 64 }, 'No data from brewerydb', response);
                   }
                   breweries = breweryResults.body.data.map(breweryData => {
                     let brewery = new constructor.Brewery(breweryData);
 
                     let sql = `INSERT INTO breweries(id, brewery, website, image, lat, long, time_stamp) VALUES($1, $2, $3, $4, $5, $6, $7) ON CONFLICT DO NOTHING;`;
                     let values = Object.values(brewery);
+                    console.log('\n\n#################', values, '72')
 
                     client.query(sql, values)
                       .catch(error => errorHandler(error));
 
                     sql = `SELECT * FROM breweries WHERE id=$1;`;
-                    values = Object.values(brewery.id);
+                    values = [brewery.id];
                     client.query(sql, values)
                       .then(breweryQueryResult => {
                         // this is where the brewery gets returned for the map method
-                        getBreweriesWeWantToRender(breweryQueryResult, response)
+                        getBreweriesWeWantToRender(breweryQueryResult, location, response);
                       })
                       .catch(error => errorHandler(error));
                   });
-                  response.send(location);
+                 
                 })
                 .catch(error => errorHandler(error));
             }
@@ -88,14 +92,15 @@ function search(request, response) {
 
       } else {
         //console.log('No SQL result, going to geocode API');
-        const url = `https://maps.googleapis.com/maps/api/geocode/json?key=${process.env.GOOGLE_API_KEY}&address=${city}`;
+       let url = `https://maps.googleapis.com/maps/api/geocode/json?key=${process.env.GOOGLE_API_KEY}&address=${city}`;
+        console.log(url)
         superagent
           .get(url)
           .then(data => {
 
             // console.log('🗺 from the googs');
             if (!data.body.results.length) {
-              errorHandler({ status: 404 }, 'Google API not returning any data. Please check your input', response);
+              errorHandler({ status: 404, line: 100 }, 'Google API not returning any data. Please check your input', response);
               throw 'Where are we??? Nothing back from GeoCodeAPI';
             } else {
 
@@ -119,16 +124,16 @@ function search(request, response) {
                       if (breweryResults.rowCount > 0) {
 
                         breweries = breweryResults.rows;
-                        response.send(location);
+                        getBreweriesWeWantToRender(breweries, location, response);
 
                       } else { // get breweries from API
 
-                        const url = `https://sandbox-api.brewerydb.com/v2/search/geo/point?lat=${location.lat}&lng=${location.long}&key=${process.env.BREWERYDB_API_KEY}&radius=20`;
+                        const url = `https://api.brewerydb.com/v2/search/geo/point?lat=${location.lat}&lng=${location.long}&key=${process.env.BREWERYDB_API_KEY}&radius=20`;
 
                         superagent.get(url)
                           .then(breweryResults => {
                             if (!breweryResults.body.data) {
-                              errorHandler({status:404}, 'No data from brewerydb', response);
+                              errorHandler({status: 404, line: 133}, 'No data from brewerydb', response);
                             }
                             breweries = breweryResults.body.data.map(breweryData => {
                               let brewery = new constructor.Brewery(breweryData);
@@ -151,7 +156,7 @@ function search(request, response) {
                                 .catch(error => errorHandler(error));
                             });
                             // THis is where the data gets sent back tothe front end. IT might work elsewhere, but this works for now.
-                            response.send(location);
+                            getBreweriesWeWantToRender(breweries, location, response)
                           })
                           .catch(error => errorHandler(error));
                       }
@@ -169,25 +174,24 @@ function search(request, response) {
 }
 
 //render map
-function getBreweriesWeWantToRender(breweryApiResults, response) {
+function getBreweriesWeWantToRender(breweries, location, response) {
   //every brewery on the map needs to have beers avaliable
-  let url = `https://api.brewerydb.com/v2/brewery/${brewery.id}/beers?key=${BREWERYDB_API_KEY};`
-  let breweryArray = [];
-
-  breweryApiResults.forEach(brewery => {
-    superagent.get(url)
-      .then( beers => {
-        if(beers.body.data){
-          breweryArray.push(brewery);
-        }
-      }).catch(error => errorHandler(error))
-  })
-  response.render('/search', {breweryArray})
+  let breweryArray = breweries;
+  console.log('finding breweries with beer 178')
+  // breweryApiResults.rows.forEach(brewery => {
+  //   let url = `https://api.brewerydb.com/v2/brewery/${brewery.id}/beers?key=${BREWERYDB_API_KEY};`
+  //   // superagent.get(url)
+  //   //   .then( beers => {
+  //   //     if(beers.body.data){
+  //   //       breweryArray.push(brewery);
+  //   //     }
+  //   //   }).catch(error => errorHandler(error))
+  //   console.log(brewery);
+  //   breweryArray.push(brewery);
+  // })
+  response.render('search', {location:location, breweries: breweryArray})
 }
 //
-function haveBeer(request, response){
-
-}
 
 //fetch breweries and their beer list
 function breweries(request, response) {

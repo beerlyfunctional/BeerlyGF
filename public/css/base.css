@@ -5,7 +5,7 @@ body {
   margin-right: auto;
 }
 * {
-    background-color: rgb(107, 154, 140);
+    /* background-color: rgb(107, 154, 140); */
     border-color: rgb(35, 26, 19);
     box-sizing: border-box;
   }
