@@ -1,11 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <%- include('./partials/head.ejs') -%>
+    <%- include('../partials/head.ejs', {pageTitle: breweryBeers[0].breweryname}) -%>
 </head>
 <body>
-    <%- include('./partials/header.ejs') -%>
-    <%- include('./partials/searchResultFormat.ejs') -%>
-    <%- include('./partials/footer.ejs') -%>
+    <%- include('../partials/header.ejs') -%>
+    
+    <section class="beer-result container">
+        <ul id="beerObject">
+            <h1><%= breweryBeers[0].breweryname %></h1>
+            <p><img src="<%= breweryBeers[0].breweryimage %>"></p>
+            <p><%= breweryBeers[0].website %></p>
+            <li class="beer-view">
+                <% breweryBeers.forEach(beer => { %>
+                <h4>Name: <a href="/beers/<%= beer.beerid %>"><%= beer.beername %></a></h4>
+                <p> Style: <%= beer.stylename %></p>
+                <p>ABV: <%= beer.abv %></p>
+                <% }) %>
+            </li>
+        </ul>
+    </section>
+
+    <%- include('../partials/footer.ejs') -%>
 </body>
 </html>
