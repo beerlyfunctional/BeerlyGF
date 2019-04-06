@@ -39,9 +39,10 @@ function Location(input, location){
 
 function Review(input) {
   this.beer_id = input.beer_id;
-  this.note = input.note !== '' ? input.note : '';
+  this.note = input.review ? input.review : '';
   this.rating = input.rating !== 0 ? input.rating : 0;
   this.time_stamp = Date.now();
+  this.gf = input.gf === 'on' ? true : false;
 }
 
 module.exports = {Beer, Style, Brewery, Location, Review};

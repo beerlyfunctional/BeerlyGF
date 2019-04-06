@@ -1,11 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <%- include('../partials/head', {pageTitle: 'Beer Details'}) %>
+  <%- include('../partials/head', {pageTitle: `Beer Details: ${beer.beername}`}) %>
 </head>
+
 <body>
   <%- include('../partials/header') %>
-  <%- include('../partials/beerDisplay') %>
+
+  <h1> <%= beer.beername %> </h1>
+  <img src="<%= beer.image %>">
+  <p> <%= beer.stylename %> </p>
+  <p> <%= beer.beerabv %> </p>
+  <p> <%= beer.beeribu %> </p>
+  <p> <%= beer.styledesc %> </p>
+
+  <form action='/reviews/<%= beer.beerid %>' method="post">
+  What do you think of this beer? <br>
+  Leave a review: <input type="text" name="review">
+  Rating: <select name="rating">
+    <option value="0">0</option>
+    <option value="1">1</option>
+    <option value="2">2</option>
+    <option value="3">3</option>
+    <option value="4">4</option>
+    <option value="5">5</option>
+  </select>
+  Is it gluten free? <input type="checkbox" name="gf">
+  <input type="hidden" name="beer_id" value="<%= beer.beerid %>">
+  <input type="submit">
+  </form>
+
+  <% reviews.forEach(review => { %>
+  <p> Notes: <%= review.note %> </p>
+  <p> Rating: <%= review.rating %> </p>
+  <p> Gluten free: <%= review.gf ? 'YES' : 'NO' %> </p>
+  <form action="/reviews/<%= review.id %>/<%= beer.beerid %>" method="post">
+    <input type="hidden" name="_method" value="delete">
+    <input type="submit" name="delete" value="delete">Delete Review</input>
+  </form>
+  <% }) %>
+
   <%- include('../partials/footer') %>
 </body>
+
 </html>
