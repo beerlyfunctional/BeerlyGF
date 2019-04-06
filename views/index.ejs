@@ -1,52 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <%- include('./partials/head.ejs', {pageTitle: 'index'}) %>   
-</head>
-<body>
-    <%- include('./partials/header.ejs') %>
+    <head>
+        <!-- std head content; css, icon and meta links; page ttl -->
+        <%- include('./partials/head.ejs', {pageTitle: 'index'}) %>   
+    </head>
+    <body>
+        <!-- dropdown navigation-->
+        <%- include('./partials/header.ejs') %>
 
-    <main class="grid-container">
+        <!-- brewery search, user enters city and initiates search -->
+        <main class="grid-container">
+            <h1 id="pageTitle">Beerly Functional Brew Search!</h1>
 
-    <h1 id="pageTitle">Beerly Functional Brew Search!</h1>
-
-    <section class="search-section"> 
-            <div id="form-div">
-                <h3 id="formHead">Looking for a brewery or specific beer? Type your city into the search.</h3>
-                <form id="form" action="/search" method="post">
-                    <input id="search-bar" type="text" name="query" placeholder="Search by City" required>
-                    <div id="button"><button id="searchButton" type="submit">Search</button></div>
-                </form>
+            <section class="search-section"> 
+                <div id="form-div">
+                    <h3 id="formHead">Looking for a brewery or specific beer? Type your city into the search.</h3>
+                    <form id="form" action="/search" method="post">
+                        <input id="search-bar" type="text" name="query" placeholder="Search by City" required>
+                        <div id="button"><button id="searchButton" type="submit">Search</button></div>
+                    </form>
+                </div>
+            </section>
+            <!-- brewery logos -->
+            <div  id='seas' class="brewLogoDiv">
+                <img class="brewLogo" src='/img/7Seas.png'>
             </div>
-    </section>
-
-    
-<div  id='seas' class="brewLogoDiv"
->
-    <img class="brewLogo" src='/img/7Seas.png'>
-</div>
-<div  id='wSea' class="brewLogoDiv"
->
-    <img class="brewLogo" src='/img/wSeaBrew.jpeg'>
-</div>
-<div id='fremont' class="brewLogoDiv"
->
-    <img class="brewLogo" src='/img/Fremont-Brewing-logo.png'>
-</div>
-<div id='pike' class="brewLogoDiv"
->
-    <img class="brewLogo" src='/img/pikeBrewing.png'>
-</div>
-<div id='gFish' class="brewLogoDiv"
->
-    <img class="brewLogo" src='/img/ghostFish.png'>
-</div>
-<div  id='elliot' class="brewLogoDiv"
->
-    <img class="brewLogo" src='/img/elliotBay.png'>
-</div>
-
-    <%- include('./partials/footer.ejs') %>
-    </main>
-</body>
+            <div  id='wSea' class="brewLogoDiv">
+                <img class="brewLogo" src='/img/wSeaBrew.jpeg'>
+            </div>
+            <div id='fremont' class="brewLogoDiv">
+                <img class="brewLogo" src='/img/Fremont-Brewing-logo.png'>
+            </div>
+            <div id='pike' class="brewLogoDiv">
+                <img class="brewLogo" src='/img/pikeBrewing.png'>
+            </div>
+            <div id='gFish' class="brewLogoDiv">
+                <img class="brewLogo" src='/img/ghostFish.png'>
+            </div>
+            <div  id='elliot' class="brewLogoDiv">
+                <img class="brewLogo" src='/img/elliotBay.png'>
+            </div>
+        </main>
+        
+        <!-- javascript, jquery, google maps scripts and age popup -->
+        <%- include('./partials/footer.ejs') %>
+    </body>
 </html>
