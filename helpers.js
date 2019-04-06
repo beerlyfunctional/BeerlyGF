@@ -1,17 +1,20 @@
 require('dotenv').config();
 var location = {};
 
+//Requireing Superagent and our Constructor file
 const superagent = require('superagent');
 const constructor = require('./constructor.js');
 
-//get that client realness
+//Connecting the Client to the Database
 
 const pg = require('pg');
 const client = new pg.Client(process.env.DATABASE_URL);
 client.connect();
 client.on('error', error => errorHandler(error));
 
-//helper functions
+//Helper Functions
+
+//Error Handler
 function errorHandler(error, message, res) {
   console.error(error);
   if (message) {
@@ -27,6 +30,7 @@ function search(request, response) {
   
   // check database to see if data is in DB
   let city = request.body.query;
+  console.log(city);
   let values = [city];
   let sql = `SELECT * FROM locations WHERE search_query=$1;`;
 
@@ -49,7 +53,7 @@ function search(request, response) {
 
             if (breweryResults.rowCount > 0) {
 
-              // response.send(location);
+             
               getBreweriesWeWantToRender(breweryResults.rows, response);
 
             } else { // get breweries from API
@@ -139,15 +143,16 @@ function search(request, response) {
 
                               console.log(`brewery ${brewery.id} added to db`);
 
-                              sql = `SELECT * FROM breweries WHERE location_id=$1;`;
-                              values = [location.id];
-                              client.query(sql, values)
-                                .then(breweryQueryResult => {
-                                  // this is where the brewery gets returned for the map method
-                                  getBreweriesWeWantToRender(breweryQueryResult.rows[0], response)
-                                })
-                                .catch(error => errorHandler(error));
                             });
+                            sql = `SELECT * FROM breweries WHERE location_id=$1;`;
+                            values = [location.id];
+                            client.query(sql, values)
+                              .then(breweryQueryResult => {
+                                // this is where the brewery gets returned for the map method
+                                getBreweriesWeWantToRender(breweryQueryResult, response)
+                                // console.log(breweryQueryResult);
+                              })
+                              .catch(error => errorHandler(error));
                             // THis is where the data gets sent back to the front end. IT might work elsewhere, but this works for now.
                           })
                           .catch(error => errorHandler(error));
@@ -168,18 +173,24 @@ function search(request, response) {
 //render map
 function getBreweriesWeWantToRender(breweries, response) {
   //every brewery on the map needs to have beers avaliable
-  // let breweryArray = breweries;
-  
-  // breweryApiResults.rows.forEach(brewery => {
+  // let breweryArray = [];
+  // console.log('heree')
+  // breweries.rows.forEach(brewery => {
   //   let url = `https://api.brewerydb.com/v2/brewery/${brewery.id}/beers?key=${BREWERYDB_API_KEY};`
-  //   // superagent.get(url)
-  //   //   .then( beers => {
-  //   //     if(beers.body.data){
-  //   //       breweryArray.push(brewery);
-  //   //     }
-  //   //   }).catch(error => errorHandler(error))
-  //   breweryArray.push(brewery);
+  //   superagent.get(url)
+  //     .then( beers => {
+  //       if(beers.body.data){
+  //         breweryArray.push(brewery);
+  //       }
+  //     }).catch(error => errorHandler(error))
+  //   // breweryArray.push(brewery);
   // })
+  // console.log('++++++')
+  // console.log(breweryArray)
+  console.log('-------')
+  // console.log(breweries)
+  console.log(location)
+  // return getBreweries(location, breweries)
   response.render('search', {location:location, breweries: breweries});
 }
 //
@@ -370,13 +381,18 @@ function getLocation(request, response) {
 }
 
 function getBreweries (request, response) {
-  let location = request.query.location;
-  location=1;
+  // let location = request.query.location;
+  // console.log('+_+_+_+_+')
+  console.log(location)
+  // console.log(request.query)
+  console.log(location.id)
+  location=location.id;
 
   let sql = `SELECT * FROM breweries WHERE location_id=$1;`;
   let values = [location];
   client.query(sql, values)
     .then(breweriesResult => {
+      console.log(breweriesResult)
       if (breweriesResult.rowCount === 0) {
         // TODO: get data from api
       }

@@ -24,8 +24,9 @@ function initMap() {
       breweries.forEach(element =>{
         console.log('-----------------------------')
         console.log(element)
+        console.log(element.lat)
         let beerMarker = new google.maps.Marker({
-          position: {lat: parseFloat(element.lat), lng: parseFloat( element.long)},
+          position: {lat: parseFloat(element.lat), lng: parseFloat(element.long)},
           map: map,
           icon: image
         });
@@ -53,8 +54,10 @@ function initMap() {
         //   document.getElementById('content'));
         //   console.log(document.createElement('div'))
         // popup.setMap(map);
+        console.log(beerMarker)
         beerMarker.setMap(map);
       });
+      console.log('done')
     }
   });
 
