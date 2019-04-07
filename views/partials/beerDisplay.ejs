@@ -1,3 +1,4 @@
+<!-- display beer name and info. -->
 <h1> <%= beer.beername %> </h1>
 <img src="<%= beer.image %>" >
 <p> <%= beer.stylename %> </p>
@@ -5,6 +6,7 @@
 <p> <%= beer.beeribu %> </p>
 <p> <%= beer.styledescription %> </p>
 
+<!-- form for user to rate and ID gluten free -->
 <form action=/>
   What do you think of this beer? <br> 
   <input type="text" name="review">
@@ -13,6 +15,7 @@
   <input type="submit" name="submit">
 </form>
 
+<!-- display reviews -->
 <% reveiews.forEach(review => { %>
 <p> <%= review.note %> </p>
 <p> <%= review.rating %> </p>
