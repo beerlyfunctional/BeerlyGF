@@ -1,53 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <!-- std head content; css, icon and meta links; page ttl -->
+    <%- include('../partials/head', {pageTitle: `Beer Details: ${beer.beername}`}) %>
+  </head>
 
-<head>
-  <%- include('../partials/head', {pageTitle: `Beer Details: ${beer.beername}`}) %>
-</head>
-
-<body>
+  <body>
+    <!-- dropdown navigation-->
     <%- include('../partials/header') %>
 
-  <main class="grid-container">
+    <main class="grid-container">
+      <!-- info on selected beer -->
+      <article id="beerInfo">
+        <h1 id="beerName"> <%= beer.beername %> </h1>
+        <img id="img" src="<%= beer.image %>">
+        <p id="style"> STYLE: <%= beer.stylename %> </p>
+        <p id="abv"> ABV: <%= beer.beerabv === 0 ? 'Not Avaialble' : beer.beerabv %> </p>
+        <p id="ibu"> IBU: <%= beer.beeribu === 0 ? 'Not Available' : beer.beeribu %> </p>
+        <p> <%= beer.styledesc %> </p>
+      </article>
 
-    <article id="beerInfo">
-      <h1 id="beerName"> <%= beer.beername %> </h1>
-      <img id="img" src="<%= beer.image %>">
-      <p id="style"> STYLE: <%= beer.stylename %> </p>
-      <p id="abv"> ABV: <%= beer.beerabv === 0 ? 'Not Avaialble' : beer.beerabv %> </p>
-      <p id="ibu"> IBU: <%= beer.beeribu === 0 ? 'Not Available' : beer.beeribu %> </p>
-      <p> <%= beer.styledesc %> </p>
-    </article>
-
+      <!-- form for comments, ratings, gluten free checkbox -->
       <form id="rating" action='/reviews/<%= beer.beerid %>' method="post">
-      What do you think of this beer? <br>
-      Leave a review: <input type="text" name="review">
-      Rating: <select name="rating">
-        <option value="0">0</option>
-        <option value="1">1</option>
-        <option value="2">2</option>
-        <option value="3">3</option>
-        <option value="4">4</option>
-        <option value="5">5</option>
-      </select>
-      Is it gluten free? <input type="checkbox" name="gf">
-      <input type="hidden" name="beer_id" value="<%= beer.beerid %>">
-      <input type="submit">
+        What do you think of this beer? <br>
+        Leave a review: <input type="text" name="review">
+        Rating: <select name="rating">
+          <option value="0">0</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+        </select>
+        Is it gluten free? <input type="checkbox" name="gf">
+        <input type="hidden" name="beer_id" value="<%= beer.beerid %>">
+        <input type="submit">
       </form>
-    <section id="notes">
-      <% reviews.forEach(review => { %>
-      <p> Notes: <%= review.note %> </p>
-      <p> Rating: <%= review.rating %> </p>
-      <p> Gluten free: <%= review.gf ? 'YES' : 'NO' %> </p>
-      <form action="/reviews/<%= review.id %>/<%= beer.beerid %>" method="post">
-        <input type="hidden" name="_method" value="delete">
-        <input type="submit" name="delete" value="delete">Delete Review</input>
-      </form>
-      <% }) %>
-    </section>
-    <%- include('../partials/footer') %>
-  </main>
 
-</body>
+      <!-- display results -->
+      <section id="notes">
+        <% reviews.forEach(review => { %>
+        <p> Notes: <%= review.note %> </p>
+        <p> Rating: <%= review.rating %> </p>
+        <p> Gluten free: <%= review.gf ? 'YES' : 'NO' %> </p>
 
+        <!-- form that allows user to delete review -->
+        <form action="/reviews/<%= review.id %>/<%= beer.beerid %>" method="post">
+          <input type="hidden" name="_method" value="delete">
+          <input type="submit" name="delete" value="delete">Delete Review</input>
+        </form>
+        <% }) %>
+      </section>
+      
+      <!-- javascript, jquery, google maps scripts and age popup -->
+      <%- include('../partials/footer') %>
+    </main>
+  </body>
 </html>
