@@ -1,21 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <%- include('./partials/head.ejs', {pageTitle: 'pageTitle'}) %>
-</head>
-<body>
-    <%- include('./partials/header.ejs') %>
+    <head>
+        <!-- std head content; css, icon and meta links; page ttl -->
+        <%- include('./partials/head.ejs', {pageTitle: 'pageTitle'}) %>
+    </head>
+    <body>
+        <!-- dropdown navigation-->
+        <%- include('./partials/header.ejs') %>
 
-    <main class="grid-container">
-
-        <h3 id="mapTitles">Brewery locations</h3>
-
-    <div id="beer-container">
-        <div id="beer-map"></div>
-        <div id="content"></div>
-    </div>
-  
-    <%- include('./partials/footer.ejs') -%>
-</body>
-
+        <main class="grid-container">
+            <h3 id="mapTitles">Brewery locations</h3>
+            <!-- google map -->
+            <div id="beer-container">
+                <!-- map of city-->
+                <div id="beer-map"></div>
+                <!-- custom pins and IFrame -->
+                <div id="content"></div>
+            </div>
+        </main>
+        
+        <!-- javascript, jquery, google maps scripts and age popup -->
+        <%- include('./partials/footer.ejs') %>
+    </body>
 </html>
