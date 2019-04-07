@@ -5,6 +5,7 @@ body {
   width: 360px;
   margin-left: auto;
   margin-right: auto;
+  background-color: rgb(107, 154, 140)
 }
 * {
     /* background-color: rgb(107, 154, 140); */
@@ -32,10 +33,10 @@ body {
   }
 }
 
-@media all and (min-width: 1280px){
+@media all and (min-width: 1280px) and (max-width: 1600px) {
 
   body {
-    width: 100%;
+    width: 1280px;
     margin-left: auto;
     margin-right: auto;
   }
