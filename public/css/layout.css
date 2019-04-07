@@ -239,6 +239,7 @@
   grid-row: 1/2;
   grid-column: 2/4;
   margin-bottom: 20px;
+  max-width: 47%;
 }
 #website {
   text-align: center;
@@ -262,6 +263,7 @@
 }
 #img {
   margin-bottom: 20px;
+  max-width: 75%;
 }
 #style {
   margin-bottom: 20px;
@@ -897,8 +899,6 @@
   grid-column: 1/7;
   background-image: url('/img/beer-taps-2631121_1920.jpg');
   background-size: contain;
-}
-
 }
 
 }

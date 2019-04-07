@@ -15,8 +15,8 @@
         <h1 id="beerName"> <%= beer.beername %> </h1>
         <img id="img" src="<%= beer.image %>">
         <p id="style"> STYLE: <%= beer.stylename %> </p>
-        <p id="abv"> ABV: <%= beer.beerabv %> </p>
-        <p id="idu"> IBU: <%= beer.beeribu %> </p>
+        <p id="abv"> ABV: <%= beer.beerabv === 0 ? 'Not Avaialble' : beer.beerabv %> </p>
+        <p id="ibu"> IBU: <%= beer.beeribu === 0 ? 'Not Available' : beer.beeribu %> </p>
         <p> <%= beer.styledesc %> </p>
       </article>
 

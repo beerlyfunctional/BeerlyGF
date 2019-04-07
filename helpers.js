@@ -1,7 +1,10 @@
 require('dotenv').config();
+
+// location gets used in multiple places, so needs to be a global for now.
+// Preferably it should get passed around inside functions, but this is adequate.
 var location = {};
 
-//Requireing Superagent and our Constructor file
+//Requiring Superagent and our Constructor file
 const superagent = require('superagent');
 const constructor = require('./constructor.js');
 
@@ -14,188 +17,203 @@ client.on('error', error => errorHandler(error));
 
 //Helper Functions
 
-//Error Handler
+/**
+ * Error Handler
+ * @param {object} error
+ * @param {string} messsage Friendly error description
+ * @param {object} res Express.js response
+**/
 function errorHandler(error, message, res) {
   console.error(error);
   if (message) {
-  
     if (res) {
       res.send(message);
     }
+    console.log(message);
   }
 }
 
-// Search function
+/**
+ * Search function - the heavy lifter
+ * @param {object} request Express.js request
+ * @param {object} response Express.js response
+ * @param {string} request.body.query the location string to be passed into the geocode API.
+ * @request POST method
+ */
 function search(request, response) {
-  
-  // check database to see if data is in DB
-  let city = request.body.query;
+
+  // First make sure we have a styles table. If not, update it.
+  updateStylesTable();
+
+  // If this route is hit without going through the search field on the main page, redirect to the main page
+  if (!request.body || !request.body.query) response.redirect('/');
+
+  let city = request.body.query.toLowerCase();
   console.log(city);
   let values = [city];
   let sql = `SELECT * FROM locations WHERE search_query=$1;`;
-
-
   let breweries;
-  client
-    .query(sql, values)
+
+  // check database to see if data is in DB
+  client.query(sql, values)
     .then(locationResult => {
 
+      // If we get a location back from the database, use the first one and query breweries.
       if (locationResult.rowCount > 0) {
-        //transfer control over to map function -> which will do the rendering
-        location = locationResult.rows[0];
-  
 
+        location = locationResult.rows[0];
         let sql = `SELECT * FROM breweries WHERE location_id = $1;`;
         let values = [location.id];
 
-        client.query(sql, values)
-          .then(breweryResults => {
-
-            if (breweryResults.rowCount > 0) {
-
-             
-              getBreweriesWeWantToRender(breweryResults.rows, location, response);
-
-            } else { // get breweries from API
-
-              let url = `https://api.brewerydb.com/v2/search/geo/point?lat=${location.lat}&lng=${location.long}&key=${process.env.BREWERYDB_API_KEY}&radius=20`;
-            
-              superagent.get(url)
-                .then(breweryResults => {
-               
-                  if (!breweryResults.body.data) {
-                    return errorHandler({ status: 404, line: 64 }, 'No data from brewerydb', response);
-                  }
-                  breweries = breweryResults.body.data.map(breweryData => {
-                    let brewery = new constructor.Brewery(breweryData);
-
-                    let sql = `INSERT INTO breweries(id, brewery, website, image, lat, long, time_stamp) VALUES($1, $2, $3, $4, $5, $6, $7) ON CONFLICT DO NOTHING;`;
-                    let values = Object.values(brewery);
-                
-
-                    client.query(sql, values)
-                      .catch(error => errorHandler(error));
-
-                    sql = `SELECT * FROM breweries WHERE id=$1;`;
-                    values = [brewery.id];
-                    client.query(sql, values)
-                      .then(breweryQueryResult => {
-                        console.log(breweryQueryResult.rowCount, `🙈`)
-                        // this is where the brewery gets returned for the map method
-                        getBreweriesWeWantToRender(breweryQueryResult.rows, location, response);
-                      })
-                      .catch(error => {errorHandler(error)})
-                  });
-
-                })
-                .catch(error => errorHandler(error));
-            }
-          })
-          .catch(error => errorHandler(error));
+        // return the Promise created by the brewery query, which will become a brewery list result.
+        return client.query(sql, values);
 
       } else {
+        // We have no location like this in our database, so go query Google, get a new location, and then query BreweryDB
+        // for breweries.
+        // This could maybe be improved by saving locations as lat-long pairs with greatly reduced resolution
         let url = `https://maps.googleapis.com/maps/api/geocode/json?key=${process.env.GOOGLE_API_KEY}&address=${city}`;
-        superagent
-          .get(url)
-          .then(data => {
-            if (!data.body.results.length) {
-              errorHandler({ status: 404, line: 100 }, 'Google API not returning any data. Please check your input', response);
-              throw 'Where are we??? Nothing back from GeoCodeAPI';
-            } else {
+        return superagent.get(url).then(data => {
 
-              location = new constructor.Location(data.body.results[0].geometry.location, city);
+          if (!data.body.results.length) {
+            // If Google sends back no data, that's a problem, but nothing we can do anything about.
+            errorHandler({ status: 404, line: 100 }, 'Google API not returning any data. It may be down, try again later.', response);
+            throw 'Where are we??? Nothing back from GeoCodeAPI';
+          } else {
 
-              let sql = `INSERT INTO locations(search_query, lat, long) VALUES($1, $2, $3) RETURNING *;`;
-              let values = Object.values(location);
-              client
-                .query(sql, values)
-                .then(locationResult => {
-                  location = locationResult.rows[0];
-                  // with location object, query for breweries
+            // process the location data Google sends back
+            location = new constructor.Location(data.body.results[0].geometry.location, city);
+            console.log(city);
 
-                  let sql = `SELECT * FROM breweries WHERE location_id=$1;`;
-                  let values = [location.id];
-                  client
-                    .query(sql, values)
-                    .then(breweryResults => {
+            // Insert into the database and get the entire record back -- we'll need the ID later
+            let sql = `INSERT INTO locations(search_query, lat, long) VALUES($1, $2, $3) RETURNING *;`;
+            let values = Object.values(location);
 
-                      if (breweryResults.rowCount > 0) {
+            return client.query(sql, values);
+          }
+        }).then(locationResult => {
 
-                        breweries = breweryResults.rows;
-                        getBreweriesWeWantToRender(breweries, location, response);
+          location = locationResult.rows[0];
+          // with location object, query for breweries
 
-                      } else { // get breweries from API
-
-                        const url = `https://api.brewerydb.com/v2/search/geo/point?lat=${location.lat}&lng=${location.long}&key=${process.env.BREWERYDB_API_KEY}&radius=20`;
-                        superagent.get(url)
-                          .then(breweryResults => {
-                            if (!breweryResults.body.data) {
-                              errorHandler({status: 404, line: 133}, 'No data from brewerydb', response);
-                            }
-                            breweries = breweryResults.body.data.map(breweryData => {
-                              let brewery = new constructor.Brewery(breweryData);
-                              brewery.location_id = location.id;
-                              let sql = `INSERT INTO breweries(id, brewery, website, image, lat, long, time_stamp, location_id) VALUES($1, $2, $3, $4, $5, $6, $7, $8) ON CONFLICT DO NOTHING;`;
-                              let values = Object.values(brewery);
-
-                              client.query(sql, values)
-                                .catch(error => errorHandler(error));
-
-                              console.log(`brewery ${brewery.id} added to db`);
-
-                            });
-                            sql = `SELECT * FROM breweries WHERE location_id=$1;`;
-                            values = [location.id];
-                            client.query(sql, values)
-                              .then(breweryQueryResult => {
-                                // this is where the brewery gets returned for the map method
-                                getBreweriesWeWantToRender(breweryQueryResult.rows, location, response);
-                                // console.log(breweryQueryResult);
-                              })
-                              .catch(error => errorHandler(error));
-                            // THis is where the data gets sent back to the front end. IT might work elsewhere, but this works for now.
-                          })
-                          .catch(error => errorHandler(error));
-                      }
-                    })
-                    .catch(error => errorHandler(error));
-                  //
-                })
-                .catch(error => errorHandler(error));
-            }
-          })
-          .catch(error => errorHandler(error));
-      }
+          let sql = `SELECT * FROM breweries WHERE location_id=$1;`;
+          let values = [location.id];
+          console.log(`sql ${sql}\n\n\nvalues${values}`);
+          // returning Promise created by brewery query, which will become breweryResults
+          return client.query(sql, values);
+        });
+      } // end if-else for having to get a location from the geocode API
     })
-    .catch(error => errorHandler(error));
+    .then(breweryResults => {
+
+      if (breweryResults.rowCount !== 0) {
+
+        breweries = breweryResults.rows;
+        sendBreweriesToMap(breweries, location, response);
+
+      } else { // get breweries from API
+
+        const url = `https://api.brewerydb.com/v2/search/geo/point?lat=${location.lat}&lng=${location.long}&key=${process.env.BREWERYDB_API_KEY}&radius=20`;
+        superagent.get(url).then(breweryResults => {
+
+          if (!breweryResults.body.data) {
+            errorHandler({ status: 404, line: 143 }, 'No data from BreweryDB. There may be no known breweries in this area. Send us an email!', response);
+          } else {
+            breweries = breweryResults.body.data.map(breweryData => {
+
+              let brewery = new constructor.Brewery(breweryData);
+              brewery.location_id = location.id;
+
+              let sql = `INSERT INTO breweries(id, brewery, website, image, lat, long, time_stamp, location_id) VALUES($1, $2, $3, $4, $5, $6, $7, $8) ON CONFLICT DO NOTHING;`;
+              let values = Object.values(brewery);
+
+              client.query(sql, values)
+                .catch(errorHandler);
+              return brewery;
+
+            });
+          }
+
+          sql = `SELECT * FROM breweries WHERE location_id=$1;`;
+          values = [location.id];
+
+          client.query(sql, values).then(breweryQueryResult => {
+            // this is where the brewery gets returned for the map front end
+            sendBreweriesToMap(breweryQueryResult.rows, location, response);
+
+          }).catch(errorHandler);
+
+        }).catch(errorHandler);
+      } // end if-else for getting breweries from API
+    }).catch(errorHandler);
 }
 
-//render map
-function getBreweriesWeWantToRender(breweries, location, response) {
-  //every brewery on the map needs to have beers avaliable
-  // let breweryArray = [];
-  // console.log('heree')
-  // breweries.rows.forEach(brewery => {
-  //   let url = `https://api.brewerydb.com/v2/brewery/${brewery.id}/beers?key=${BREWERYDB_API_KEY};`
-  //   superagent.get(url)
-  //     .then( beers => {
-  //       if(beers.body.data){
-  //         breweryArray.push(brewery);
-  //       }
-  //     }).catch(error => errorHandler(error))
-  //   // breweryArray.push(brewery);
-  // })
-  // console.log('++++++')
-  // console.log(breweryArray)
-  console.log('-------')
-  // console.log(breweries)
-  console.log(location)
-  // return getBreweries(location, breweries)
-  response.render('search', {location:location, breweries: breweries});
+//render map function
+/**
+ * @param {array} breweries An aray of brewery objects
+ * @param {object} location A location object
+ * @param {object} response Express.js response object
+ * This function takes an array of breweries, a location, and an express.js response and renders the results map.
+ */
+function sendBreweriesToMap(breweries, location, response) {
+  response.render('search', { location: location, breweries: breweries });
 }
-//
 
-//fetch breweries and their beer list
+/**
+ * @param {object} request Express.js request
+ * @param {object} response Express.js response
+ * This is the front-end function which executes just before the map renders. It is only called from the front-end
+ * and only after the above sendBreweriesToMap function is executed.
+ */
+function getBreweries(request, response) {
+
+  let sql = `SELECT * FROM breweries WHERE location_id=$1;`;
+  let values = [location.id];
+  client.query(sql, values).then(breweriesResult => {
+    response.send({ breweries: breweriesResult.rows, location: location });
+  })
+    .catch(errorHandler);
+}
+
+/**
+ * updates the styles table from BreweryDB if we don't have styles in the database.
+ */
+function updateStylesTable() {
+
+  let sql = `SELECT * FROM styles;`;
+  let url = `https://api.brewerydb.com/v2/styles/?key=${process.env.BREWERYDB_API_KEY}`;
+
+  try {
+    client.query(sql).then(stylesResult => {
+
+      if (stylesResult.rowCount) return null;
+      else return superagent.get(url);
+
+    }).then(apiStylesResult => {
+      if (!apiStylesResult) return null;
+      apiStylesResult.body.data.forEach(style => {
+
+        let thisStyle = new constructor.Style(style);
+
+        let sql = `INSERT INTO styles(id, name, description, abvmin, abvmax, ibumin, ibumax, time_stamp) VALUES ($1,$2,$3,$4,$5,$6,$7,$8) ON CONFLICT DO NOTHING;`;
+        let values = Object.values(thisStyle);
+
+        client.query(sql, values)
+          .catch(errorHandler);
+      });
+    }).catch(errorHandler);
+  }
+  catch (error) {
+    errorHandler(error);
+  }
+}
+
+/**
+ * Callback for /brewery/:brewery_id route
+ * @param {object} request Express.js request
+ * @param {object} response Express.js response
+ * @param {string} request.params.brewery_id the id used to select a specific brewery
+ */
 function breweries(request, response) {
   let brewery_id = request.params.brewery_id;
   let sql = `SELECT breweries.id breweryid, breweries.brewery breweryname, breweries.website website, breweries.image breweryimage, beers.beer_id beerid, beers.name beername, beers.abv beerabv, styles.name stylename
@@ -209,15 +227,16 @@ function breweries(request, response) {
 
     // This query only returns rows if there are beers for a brewery.
     if (breweryResult.rowCount === 0) {
-      console.log(`\n\n\nNO DATA FROM DB, BIG PROBLEMS\n\n\nGetting beers for this brewery from BreweryDB`);
+      console.log(`Getting beers for this brewery from BreweryDB`);
       return beersByBreweryFromApi(brewery_id);
     } else {
-      response.render('pages/breweryDetails', {breweryBeers: breweryResult.rows});
+      response.render('pages/breweryDetails', { breweryBeers: breweryResult.rows });
     }
 
   }).then(beersFromApi => {
     console.log('beer data back from API');
-    if (!beersFromApi.body.data) { // no beers for this brewery, so create a special "this beer doesn't exist" beer for the database
+    // if there are no beers for this brewery, so create a special "this beer doesn't exist" beer for the database
+    if (!beersFromApi.body.data) {
       beersFromApi.body.data = [{
         name: 'no beers available',
         id: `${brewery_id}none`,
@@ -225,11 +244,11 @@ function breweries(request, response) {
         ibu: 0,
         time_stamp: Date.now(),
         style: { id: 1 },
-        breweries: [{id: brewery_id }]
+        breweries: [{ id: brewery_id }]
       }];
     }
 
-    // We got beer data back, so process it, insert into database, and redirect to the brewery page to pull data again.
+    // Take beer data, process it, insert into database, and redirect to the brewery page to pull data again.
     beersFromApi.body.data.forEach(element => {
 
       let beer = new constructor.Beer(element);
@@ -245,16 +264,26 @@ function breweries(request, response) {
   }).catch(errorHandler);
 }
 
+/**
+ * @param {string} brewery_id id of the brewery you want the beers from
+ * @returns {Promise} Promise object which represents a superagent.get call to the BreweryDB API
+ */
 function beersByBreweryFromApi(brewery_id) {
   console.log('getting beer list from api for brewery_id ', brewery_id);
-  let url=`https://api.brewerydb.com/v2/brewery/${brewery_id}/beers?withBreweries=Y&key=${process.env.BREWERYDB_API_KEY}`;
+  let url = `https://api.brewerydb.com/v2/brewery/${brewery_id}/beers?withBreweries=Y&key=${process.env.BREWERYDB_API_KEY}`;
   console.log(url);
   return superagent.get(url);
 }
 
-//fetch a single beer's details
+/**
+ * @param {object} request Express.js request
+ * @param {object} response Express.js response
+ * @param {string} request.params.beer_id ID of the beer you want to get details about
+ * @request GET method
+ * fetch a single beer's details from the database and send it to the front end.
+ * */
 function beers(request, response) {
-  // let sql = `SELECT * FROM beers WHERE id=$1;`;
+
   let beer, reviewsArray;
 
   let sql = `SELECT breweries.brewery breweryname, breweries.website website, breweries.image image, beers.beer_id beerid, beers.name beername, beers.abv beerabv, beers.ibu beeribu, styles.name stylename, styles.description styledesc, styles.abvmin abvmin, styles.abvmax abvmax, styles.ibumin ibumin, styles.ibumax ibumax
@@ -272,185 +301,53 @@ function beers(request, response) {
       return client.query(sql, [beer.beerid]);
     })
     .then(reviewsResult => {
+
       if (reviewsResult.rowCount === 0) reviewsArray = [];
       else reviewsArray = reviewsResult.rows;
-      // console.log(`${beer}\n\n\n ${reviewsArray}`);
-      console.log(reviewsResult.rows[0], request.params.beer_id);
-      response.render('pages/beerdetails', {beer: beer, reviews: reviewsArray});
-    })
-    .catch(error => errorHandler(error));
+
+      response.render('pages/beerdetails', { beer: beer, reviews: reviewsArray });
+    }).catch(errorHandler);
 }
 
-//update a beer entry w/ a comment
-
-function review(request, response){
-  // let {beer_id, note, rating, time_stamp, gf} = request.body;
-  console.log(request.body);
+/**
+ * Callback function for the /reviews/:beer_id route
+ * Used to insert a review into the database, then redirect the user back to the beer.
+ * @param {object} request Express.js request
+ * @param {object} response Express.js response
+ * @param {string} request.params.beer_id ID of the beer you want to add a review for
+ * @request POST method
+ */
+function review(request, response) {
 
   let review = new constructor.Review(request.body);
 
   let sql = `INSERT INTO reviews(beer_id, note, rating, time_stamp, gf) VALUES($1, $2, $3, $4, $5) RETURNING id;`;
   let values = Object.values(review);
-  console.log(values);
-  console.log(review);
 
   client.query(sql, values)
     .then(result => {
       console.log(result.rows[0].id);
       response.redirect(`/beers/${request.params.beer_id}`);
     })
-    .catch(error => errorHandler(error));
+    .catch(errorHandler);
 }
 
-//delete a comment
-
-function removeReview(request, response){
+/**
+ * Callback function for the /reviews/:review_id/:beer_id route
+ * Used to delete a review and redirect the user back to a beer
+ * @param {object} request Express.js request
+ * @param {object} response Express.js response
+ * @param {string} request.params.review_id Review ID to delete from the database
+ * @param {string} request.params.beer_id Beer ID to redirect the user back to
+ */
+function removeReview(request, response) {
   let sql = `DELETE FROM reviews WHERE id=$1`;
   let values = [request.params.review_id];
-  console.log(request.body);
 
   client.query(sql, values)
     .then(response.redirect(`/beers/${request.params.beer_id}`))
     .catch(errorHandler);
-
 }
 
-//render shelf
 
-function shelf(request, response){
-  let sql = //join function
-
-client.query(sql [request.params.beer_id]).then(shelfResult =>{
-  if(shelfResult.rows.length > 0){
-    return response.render(`./shelf`, {shelf: shelfResult.rows});
-  }
-}).catch(error => errorHandler(error));
-}
-
-//database seeding
-
-function seed(req, res) {
-  let location;
-  let sql = `SELECT * FROM locations WHERE search_query=$1;`;
-  let values = ['seattle'];
-  client
-    .query(sql, values)
-    .then(result => {
-      if (!result.rowCount) throw 'All broken, stop now';
-      location = result.rows[0];
-
-      const brewerySeed = require('./data/breweries-seattle.json').data;
-      const breweryArray = brewerySeed
-        .filter(brewery => brewery.openToPublic === 'Y')
-        .map(element => {
-
-          let brewery = new constructor.Brewery(element);
-          brewery.location_id = location.id;
-
-          let sql = `INSERT INTO breweries(id, brewery, website, image, lat, long, time_stamp, location_id) VALUES($1,$2,$3,$4,$5,$6,$7,$8) ON CONFLICT DO NOTHING;`;
-          let values = Object.values(brewery);
-
-          client.query(sql, values)
-            .catch(errorHandler);
-          //.log('🍺 Insert Complete');
-          return brewery;
-        });
-
-      const styles = require('./data/styles.json').data;
-      const styleArray = styles.map(style => {
-
-        let thisStyle = new constructor.Style(style);
-
-        let sql = `INSERT INTO styles(id, name, description, abvmin, abvmax, ibumin, ibumax, time_stamp) VALUES ($1,$2,$3,$4,$5,$6,$7,$8) ON CONFLICT DO NOTHING;`;
-        let values = Object.values(thisStyle);
-
-        client.query(sql, values)
-          .catch(errorHandler);
-        //console.log('Style Insert Complete');
-        return thisStyle;
-      });
-
-      let beerSeed, beerArray;
-      breweryArray.forEach(brewery => {
-
-        beerSeed = require(`./data/${brewery.id}.json`).data;
-        beerArray = beerSeed.map(element => {
-
-          let beer = new constructor.Beer(element);
-
-          let sql = `INSERT INTO beers(name, beer_id, abv, ibu, time_stamp, style_id, brewery_id) VALUES($1,$2,$3,$4,$5,$6,$7) ON CONFLICT DO NOTHING;`;
-          let values = Object.values(beer);
-          
-          client.query(sql, values)
-            .catch(errorHandler);
-          return beer;
-        });
-      });
-      res.render('pages/datadisplay', { breweries: breweryArray, styles: styleArray, beers: beerArray });
-    })
-    .catch(errorHandler);
-
-}
-
-function getLocation(request, response) {
-  let search_query = request.query.search_query;
-  search_query='seattle';
-  let sql = `SELECT * FROM locations WHERE search_query=$1;`;
-  let values = [search_query];
-
-  client
-    .query(sql, values)
-    .then(result => {
-      if (result.rowCount === 0){
-        let url = `https://maps.googleapis.com/maps/api/geocode/json?key=${process.env.GOOGLE_API_KEY}&address=${city}`;
-        console.log(url)
-        // return next async call to promise chain
-        return superagent.get(url);
-      } else {
-        response.send(result.rows[0]);
-      }
-    })
-    .then(data => {
-      // console.log('🗺 from the googs');
-      if (!data.body.results.length) {
-        errorHandler({ status: 404, line: 100 }, 'Google API not returning any data. Please check your input', response);
-        throw 'Where are we??? Nothing back from GeoCodeAPI';
-      } else {
-
-        location = new constructor.Location(data.body.results[0].geometry.location, city);
-
-        let sql = `INSERT INTO locations(search_query, lat, long) VALUES($1, $2, $3) RETURNING *;`;
-        let values = Object.values(location);
-        return client.query(sql, values);
-      }})
-    .then(locationResult => {
-      location = locationResult.rows[0];
-      response.send(location);
-    })
-    .catch(errorHandler);
-}
-
-function getBreweries (request, response) {
-  // let location = request.query.location;
-  // console.log('+_+_+_+_+')
-  console.log(location)
-  // console.log(request.query)
-  console.log(location.id)
-  // location=location.id;
-
-  let sql = `SELECT * FROM breweries WHERE location_id=$1;`;
-  let values = [location.id];
-  client.query(sql, values)
-    .then(breweriesResult => {
-      // console.log(breweriesResult)
-      if (breweriesResult.rowCount === 0) {
-        // TODO: get data from api
-      }
-      else {
-        response.send({ breweries: breweriesResult.rows, location:location});
-      }
-    })
-    .catch(error => errorHandler(error));
-}
-
-module.exports = {search, errorHandler, breweries, beers, seed, review, removeReview, shelf, getLocation, getBreweries};
+module.exports = { search, errorHandler, breweries, beers, review, removeReview, getBreweries };
