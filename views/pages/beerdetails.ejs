@@ -6,42 +6,48 @@
 </head>
 
 <body>
-  <%- include('../partials/header') %>
+    <%- include('../partials/header') %>
 
-  <h1> <%= beer.beername %> </h1>
-  <img src="<%= beer.image %>">
-  <p> <%= beer.stylename %> </p>
-  <p> <%= beer.beerabv %> </p>
-  <p> <%= beer.beeribu %> </p>
-  <p> <%= beer.styledesc %> </p>
+  <main class="grid-container">
 
-  <form action='/reviews/<%= beer.beerid %>' method="post">
-  What do you think of this beer? <br>
-  Leave a review: <input type="text" name="review">
-  Rating: <select name="rating">
-    <option value="0">0</option>
-    <option value="1">1</option>
-    <option value="2">2</option>
-    <option value="3">3</option>
-    <option value="4">4</option>
-    <option value="5">5</option>
-  </select>
-  Is it gluten free? <input type="checkbox" name="gf">
-  <input type="hidden" name="beer_id" value="<%= beer.beerid %>">
-  <input type="submit">
-  </form>
+    <article id="beerInfo">
+      <h1 id="beerName"> <%= beer.beername %> </h1>
+      <img id="img" src="<%= beer.image %>">
+      <p id="style"> STYLE: <%= beer.stylename %> </p>
+      <p id="abv"> ABV: <%= beer.beerabv %> </p>
+      <p id="idu"> IBU: <%= beer.beeribu %> </p>
+      <p> <%= beer.styledesc %> </p>
+    </article>
 
-  <% reviews.forEach(review => { %>
-  <p> Notes: <%= review.note %> </p>
-  <p> Rating: <%= review.rating %> </p>
-  <p> Gluten free: <%= review.gf ? 'YES' : 'NO' %> </p>
-  <form action="/reviews/<%= review.id %>/<%= beer.beerid %>" method="post">
-    <input type="hidden" name="_method" value="delete">
-    <input type="submit" name="delete" value="delete">Delete Review</input>
-  </form>
-  <% }) %>
+      <form id="rating" action='/reviews/<%= beer.beerid %>' method="post">
+      What do you think of this beer? <br>
+      Leave a review: <input type="text" name="review">
+      Rating: <select name="rating">
+        <option value="0">0</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+      </select>
+      Is it gluten free? <input type="checkbox" name="gf">
+      <input type="hidden" name="beer_id" value="<%= beer.beerid %>">
+      <input type="submit">
+      </form>
+    <section id="notes">
+      <% reviews.forEach(review => { %>
+      <p> Notes: <%= review.note %> </p>
+      <p> Rating: <%= review.rating %> </p>
+      <p> Gluten free: <%= review.gf ? 'YES' : 'NO' %> </p>
+      <form action="/reviews/<%= review.id %>/<%= beer.beerid %>" method="post">
+        <input type="hidden" name="_method" value="delete">
+        <input type="submit" name="delete" value="delete">Delete Review</input>
+      </form>
+      <% }) %>
+    </section>
+    <%- include('../partials/footer') %>
+  </main>
 
-  <%- include('../partials/footer') %>
 </body>
 
 </html>
