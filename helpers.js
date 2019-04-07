@@ -54,7 +54,7 @@ function search(request, response) {
             if (breweryResults.rowCount > 0) {
 
              
-              getBreweriesWeWantToRender(breweryResults.rows, response);
+              getBreweriesWeWantToRender(breweryResults.rows, location, response);
 
             } else { // get breweries from API
 
@@ -82,7 +82,7 @@ function search(request, response) {
                       .then(breweryQueryResult => {
                         console.log(breweryQueryResult.rowCount, `🙈`)
                         // this is where the brewery gets returned for the map method
-                        getBreweriesWeWantToRender(breweryQueryResult.rows, response);
+                        getBreweriesWeWantToRender(breweryQueryResult.rows, location, response);
                       })
                       .catch(error => {errorHandler(error)})
                   });
@@ -122,7 +122,7 @@ function search(request, response) {
                       if (breweryResults.rowCount > 0) {
 
                         breweries = breweryResults.rows;
-                        getBreweriesWeWantToRender(breweries, response);
+                        getBreweriesWeWantToRender(breweries, location, response);
 
                       } else { // get breweries from API
 
@@ -149,7 +149,7 @@ function search(request, response) {
                             client.query(sql, values)
                               .then(breweryQueryResult => {
                                 // this is where the brewery gets returned for the map method
-                                getBreweriesWeWantToRender(breweryQueryResult.rows, response);
+                                getBreweriesWeWantToRender(breweryQueryResult.rows, location, response);
                                 // console.log(breweryQueryResult);
                               })
                               .catch(error => errorHandler(error));
@@ -171,7 +171,7 @@ function search(request, response) {
 }
 
 //render map
-function getBreweriesWeWantToRender(breweries, response) {
+function getBreweriesWeWantToRender(breweries, location, response) {
   //every brewery on the map needs to have beers avaliable
   // let breweryArray = [];
   // console.log('heree')
@@ -197,18 +197,59 @@ function getBreweriesWeWantToRender(breweries, response) {
 
 //fetch breweries and their beer list
 function breweries(request, response) {
+  let brewery_id = request.params.brewery_id;
   let sql = `SELECT breweries.id breweryid, breweries.brewery breweryname, breweries.website website, breweries.image breweryimage, beers.beer_id beerid, beers.name beername, beers.abv beerabv, styles.name stylename
   FROM breweries
   INNER JOIN beers ON beers.brewery_id = breweries.id
   INNER JOIN styles ON beers.style_id = styles.id
   WHERE breweries.id=$1;`;
 
-  client.query(sql, [request.params.brewery_id]).then(breweryResult => {
-    if (breweryResult.rowCount === 0) console.log('\n\n\nNO DATA FROM DB, BIG PROBLEMS\n\n\n');
-    console.log('line204');
-    response.render('pages/breweryDetails', {breweryBeers: breweryResult.rows});
-  })
-    .catch(errorHandler);
+  // query the database for the following information: breweryid, breweryname, website, breweryimage, beerid, beername, beerabv, stylename
+  client.query(sql, [brewery_id]).then(breweryResult => {
+
+    // This query only returns rows if there are beers for a brewery.
+    if (breweryResult.rowCount === 0) {
+      console.log(`\n\n\nNO DATA FROM DB, BIG PROBLEMS\n\n\nGetting beers for this brewery from BreweryDB`);
+      return beersByBreweryFromApi(brewery_id);
+    } else {
+      response.render('pages/breweryDetails', {breweryBeers: breweryResult.rows});
+    }
+
+  }).then(beersFromApi => {
+    console.log('beer data back from API');
+    if (!beersFromApi.body.data) { // no beers for this brewery, so create a special "this beer doesn't exist" beer for the database
+      beersFromApi.body.data = [{
+        name: 'no beers available',
+        id: `${brewery_id}none`,
+        abv: 0,
+        ibu: 0,
+        time_stamp: Date.now(),
+        style: { id: 1 },
+        breweries: [{id: brewery_id }]
+      }];
+    }
+
+    // We got beer data back, so process it, insert into database, and redirect to the brewery page to pull data again.
+    beersFromApi.body.data.forEach(element => {
+
+      let beer = new constructor.Beer(element);
+
+      let sql = `INSERT INTO beers(name, beer_id, abv, ibu, time_stamp, style_id, brewery_id) VALUES($1,$2,$3,$4,$5,$6,$7) ON CONFLICT DO NOTHING;`;
+      let values = Object.values(beer);
+
+      client.query(sql, values)
+        .catch(errorHandler);
+    });
+    response.redirect(`/breweries/${brewery_id}`);
+
+  }).catch(errorHandler);
+}
+
+function beersByBreweryFromApi(brewery_id) {
+  console.log('getting beer list from api for brewery_id ', brewery_id);
+  let url=`https://api.brewerydb.com/v2/brewery/${brewery_id}/beers?withBreweries=Y&key=${process.env.BREWERYDB_API_KEY}`;
+  console.log(url);
+  return superagent.get(url);
 }
 
 //fetch a single beer's details
@@ -395,10 +436,10 @@ function getBreweries (request, response) {
   console.log(location)
   // console.log(request.query)
   console.log(location.id)
-  location=location.id;
+  // location=location.id;
 
   let sql = `SELECT * FROM breweries WHERE location_id=$1;`;
-  let values = [location];
+  let values = [location.id];
   client.query(sql, values)
     .then(breweriesResult => {
       // console.log(breweriesResult)
@@ -406,18 +447,10 @@ function getBreweries (request, response) {
         // TODO: get data from api
       }
       else {
-        response.send(breweriesResult.rows);
+        response.send({ breweries: breweriesResult.rows, location:location});
       }
     })
     .catch(error => errorHandler(error));
 }
 
-function getBeers (request, response) {
-
-}
-
-function getStyles (request, response) {
-
-}
-
-module.exports = {search, errorHandler, breweries, beers, seed, review, removeReview, shelf, getLocation, getBreweries, getBeers, getStyles};
+module.exports = {search, errorHandler, breweries, beers, seed, review, removeReview, shelf, getLocation, getBreweries};

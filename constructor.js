@@ -3,8 +3,8 @@
 function Beer(input) {
   this.name = input.name;
   this.beer_id = input.id;
-  this.abv = input.abv ? input.abv : 'Not Avaliable';
-  this.ibu = input.ibu ? input.ibu : 'Not Avaliable';
+  this.abv = input.abv ? input.abv : 0;
+  this.ibu = input.ibu ? input.ibu : 0;
   this.time_stamp = Date.now();
   this.style_id = input.style.id;
   this.brewery_id = input.breweries[0].id;
@@ -13,11 +13,11 @@ function Beer(input) {
 function Style(input) {
   this.id = input.id;
   this.name = input.name;
-  this.description = input.description ? input.description : '';
-  this.abvmin = input.abvMin ? input.abvMin : 'Not Avaliable';
-  this.abvmax = input.abvMax ? input.abvMax : 'Not Avaliable';
-  this.ibumin = input.ibuMin ? input.ibuMin : 'Not Avaliable';
-  this.ibumax = input.ibuMax ? input.ibuMax : 'Not Avaliable';
+  this.description = input.description ? input.description : 'Style description not available';
+  this.abvmin = input.abvMin ? input.abvMin : 0;
+  this.abvmax = input.abvMax ? input.abvMax : 0;
+  this.ibumin = input.ibuMin ? input.ibuMin : 0;
+  this.ibumax = input.ibuMax ? input.ibuMax : 0;
   this.time_stamp = Date.now();
 }
 

@@ -11,6 +11,7 @@
             <h1><%= breweryBeers[0].breweryname %></h1>
             <p><img src="<%= breweryBeers[0].breweryimage %>"></p>
             <p><%= breweryBeers[0].website %></p>
+            <% if (breweryBeers[0].beerid) { %>
             <li class="beer-view">
                 <% breweryBeers.forEach(beer => { %>
                 <h4>Name: <a href="/beers/<%= beer.beerid %>"><%= beer.beername %></a></h4>
@@ -18,6 +19,7 @@
                 <p>ABV: <%= beer.abv %></p>
                 <% }) %>
             </li>
+            <% } %>
         </ul>
     </section>
 
