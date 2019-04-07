@@ -149,7 +149,7 @@ function search(request, response) {
                             client.query(sql, values)
                               .then(breweryQueryResult => {
                                 // this is where the brewery gets returned for the map method
-                                getBreweriesWeWantToRender(breweryQueryResult, response)
+                                getBreweriesWeWantToRender(breweryQueryResult.rows, response);
                                 // console.log(breweryQueryResult);
                               })
                               .catch(error => errorHandler(error));
@@ -401,7 +401,7 @@ function getBreweries (request, response) {
   let values = [location];
   client.query(sql, values)
     .then(breweriesResult => {
-      console.log(breweriesResult)
+      // console.log(breweriesResult)
       if (breweriesResult.rowCount === 0) {
         // TODO: get data from api
       }
