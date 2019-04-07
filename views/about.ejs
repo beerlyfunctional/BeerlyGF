@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <!-- std head content; css, icon and meta links; page ttl -->
+        <%- include('./partials/head.ejs', {pageTitle: 'about'}) %>
+    </head>
+
+    <body>  
+        <!-- dropdown navigation-->
+        <%- include('./partials/header.ejs') %>
+
+        <main class="grid-container">
+            <!-- general information about development effort -->
+            <h1 id="pageTitle">Beerly Functional</h1>
+            <article id="about">
+                <p id='aboutPara'> About: Beerly functional is... just like it sounds. Its a barely functioning app that, in practice, allows the user to search by city and get all of the breweries within their area. Once a brewery has been chosen on the map, the app will take the user to a list of all of the beers that the brewery makes.</p>
+            </article>
+
+            <div id="about-img">
+                <img id="cheers" src='/img/alcoholic-beverage-ale-beer-1464825.jpg'>
+
+            </div>  
+
+            <!-- developer bios -->    
+            <section class="bio-each" id="bio-each1">
+                <h3>Jesse Van Volkinburg</h3>
+                <img src='/img/Jesse.jpg' id="bio-image1" class="bio-img">
+            </section>
+            <p id="bio1">Jesse has lived in the Northwest for nearly 30 years, moving between Portland, Olympia, Bellingham, and Seattle. He has a varied background based in engineering and manufacturing, with a bit of sales thrown in for good measure. He has a passion for technology, innovation, automation, machine learning, and robotics, with a B.S. in Manufacturing Engineering Technology. In his personal time, he enjoys reading, hiking, exploration, and gardening.</p>
+
+            <section class="bio-each" id="bio-each2">
+                <h3>Merry Cimakasky</h3>
+                <img src='/img/Merry.jpg' id="bio-image2" class="bio-img">
+            </section>
+            <p id="bio2">Merry Cimakasky is a full-stack javascript developer currently residing in Seattle. They are an up and coming tech professional with a strong background in customer service and process improvement. They are an art, coffee, and j-fashion enthusiast. Most importantly, they are Bebe to the worlds best cat, Salem and worlds worst cat, Bynx.</p>
+
+            <section class="bio-each" id="bio-each3">
+                <h3>Juliann Talkington</h3>
+                <img src='/img/Juliann.jpg' id="bio-image3" class="bio-img">
+            </section>
+            <p id="bio3">Juliann grew up in Washington State and studied engineering at Stanford University. Since graduation, she has worked in a variety of technical and management assignments. She enjoys jobs that require creative problem solving, technical and business acumen, and teamwork. While she likes projects with a domestic focus, she also enjoys the challenge of international work. Software development is interesting to her, because it is both creative and technical.</p>
+
+            <section class="bio-each" id="bio-each4">
+                <h3>Trey Herndon</h3>
+                <img src='/img/Trey.jpg' id="bio-image4" class="bio-img">
+            </section>
+            <p id="bio4">Trey is a developer from the Midwest who moved to Washington while in the Army. He has a background as a logistician in the Army and operations and project management in the telecom and construction sectors. In spare time, Trey enjoys snow sports like skiing and snowboarding, as well as sailing and scuba. Basically water sports in any form, frozen or liquid.</p>
+
+        </main>
+        
+        <!-- javascript, jquery, google maps scripts and age popup -->
+        <%- include('./partials/footer.ejs') %>
+     </body>
+
+</html>

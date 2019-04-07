@@ -1,7 +1,48 @@
 /* BG: 107, 154, 140; borders: 35, 26, 19; contrastBG: 160, 128, 92; Match Blue: 33, 88, 118; matched med brown: 62, 47, 46 */
+@media all and (min-width: 360px){
 
-* {
-  background-color: rgb(107, 154, 140);
-  border-color: rgb(35, 26, 19);
-  
+body {
+  width: 360px;
+  margin-left: auto;
+  margin-right: auto;
+  background-color: rgb(107, 154, 140)
 }
+* {
+    /* background-color: rgb(107, 154, 140); */
+    border-color: rgb(35, 26, 19);
+    box-sizing: border-box;
+  }
+  p {
+    font-size: 75%;
+  }
+  h3 {
+    text-align: center;
+  }
+}
+
+
+@media all and (min-width: 768px){
+
+  body {
+    width: 768px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  p {
+    font-size: 100%;
+  }
+}
+
+@media all and (min-width: 1280px) and (max-width: 1600px) {
+
+  body {
+    width: 1280px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  p {
+    font-size: 170%;
+  }
+
+}
+
