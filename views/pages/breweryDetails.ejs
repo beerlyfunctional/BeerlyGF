@@ -16,7 +16,7 @@
                 <!-- general information about brewery -->
                 <h1 id="breweryName"><%= breweryBeers[0].breweryname %></h1>
                 <p id="brewImage"><img id="brewImg" src="<%= breweryBeers[0].breweryimage %>"></p>
-                <p id="website"><%= breweryBeers[0].website %></p>
+                <p id="website"><a href="<%= breweryBeers[0].website %>"><%= breweryBeers[0].website %></a></p>
                 <% if (breweryBeers[0].beerid) { %>
 
                 <!-- each beer brewery produces -->
