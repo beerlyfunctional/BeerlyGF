@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- std head content; css, icon and meta links; page ttl -->
+    <%- include('../partials/head.ejs', {pageTitle: breweryBeers[0].breweryname}) -%>
+</head>
+<body>
+    <!-- dropdown navigation-->
+    <%- include('../partials/header.ejs') -%>
+
+    <main class="grid-container">
+        
+        <!-- information on brewery user selected from map -->
+        <section class="beer-result-container">
+            <ul id="beerObject">
+                <!-- general information about brewery -->
+                <h1 id="breweryName"><%= breweryBeers[0].breweryname %></h1>
+                <p id="brewImage"><img id="brewImg" src="<%= breweryBeers[0].breweryimage %>"></p>
+                <p id="website"><a href="<%= breweryBeers[0].website %>"><%= breweryBeers[0].website %></a></p>
+                <% if (breweryBeers[0].beerid) { %>
+
+                <!-- each beer brewery produces -->
+                <li class="beer-view">
+                    <% breweryBeers.forEach(beer => { %>
+                    <h4>Name: <a href="/beers/<%= beer.beerid %>"><%= beer.beername %></a></h4>
+                    <p>Style: <%= beer.stylename %></p>
+                    <p>ABV: <%= beer.abv %></p>
+                    <% }) %>
+                </li>
+                <% } %>
+            </ul>
+        </section>
+    </main>
+
+    <!-- javascript, jquery, google maps scripts and age popup -->
+    <%- include('../partials/footer.ejs') -%>
+</body>
+</html>
