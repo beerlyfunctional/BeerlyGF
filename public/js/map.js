@@ -1,3 +1,5 @@
+'use strict';
+
 //generates map with brewery locations
 function initMap() {
   $.ajax({

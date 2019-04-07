@@ -4,7 +4,7 @@ function Beer(input) {
   this.name = input.name;
   this.beer_id = input.id;
   this.abv = input.abv ? input.abv : 0;
-  this.ibu = input.ibu ? input.ibu : 0;
+  this.ibu = input.ibu ? parseInt(input.ibu) : 0;
   this.time_stamp = Date.now();
   this.style_id = input.style.id;
   this.brewery_id = input.breweries[0].id;
@@ -16,8 +16,8 @@ function Style(input) {
   this.description = input.description ? input.description : 'Style description not available';
   this.abvmin = input.abvMin ? input.abvMin : 0;
   this.abvmax = input.abvMax ? input.abvMax : 0;
-  this.ibumin = input.ibuMin ? input.ibuMin : 0;
-  this.ibumax = input.ibuMax ? input.ibuMax : 0;
+  this.ibumin = input.ibuMin ? parseInt(input.ibuMin) : 0;
+  this.ibumax = input.ibuMax ? parseInt(input.ibuMax) : 0;
   this.time_stamp = Date.now();
 }
 //constructor function for brewery
