@@ -105,4 +105,75 @@ const brewerySeed = require('./data/breweries-seattle.json').data;
 let sql = `SELECT * FROM beers WHERE brewery_id = $1;`;
               let values = [brewery_id]
 
+
+
+
+//database seeding
+
+function seed(req, res) {
+  let location;
+  let sql = `SELECT * FROM locations WHERE search_query=$1;`;
+  let values = ['seattle'];
+  client
+    .query(sql, values)
+    .then(result => {
+      if (!result.rowCount) throw 'All broken, stop now';
+      location = result.rows[0];
+
+      const brewerySeed = require('./data/breweries-seattle.json').data;
+      const breweryArray = brewerySeed
+        .filter(brewery => brewery.openToPublic === 'Y')
+        .map(element => {
+
+          let brewery = new constructor.Brewery(element);
+          brewery.location_id = location.id;
+
+          let sql = `INSERT INTO breweries(id, brewery, website, image, lat, long, time_stamp, location_id) VALUES($1,$2,$3,$4,$5,$6,$7,$8) ON CONFLICT DO NOTHING;`;
+          let values = Object.values(brewery);
+
+          client.query(sql, values)
+            .catch(errorHandler);
+          //.log('🍺 Insert Complete');
+          return brewery;
+        });
+
+      const styles = require('./data/styles.json').data;
+      const styleArray = styles.map(style => {
+
+        let thisStyle = new constructor.Style(style);
+
+        let sql = `INSERT INTO styles(id, name, description, abvmin, abvmax, ibumin, ibumax, time_stamp) VALUES ($1,$2,$3,$4,$5,$6,$7,$8) ON CONFLICT DO NOTHING;`;
+        let values = Object.values(thisStyle);
+
+        client.query(sql, values)
+          .catch(errorHandler);
+        //console.log('Style Insert Complete');
+        return thisStyle;
+      });
+
+      let beerSeed, beerArray;
+      breweryArray.forEach(brewery => {
+
+        beerSeed = require(`./data/${brewery.id}.json`).data;
+        beerArray = beerSeed.map(element => {
+
+          let beer = new constructor.Beer(element);
+
+          let sql = `INSERT INTO beers(name, beer_id, abv, ibu, time_stamp, style_id, brewery_id) VALUES($1,$2,$3,$4,$5,$6,$7) ON CONFLICT DO NOTHING;`;
+          let values = Object.values(beer);
+
+          client.query(sql, values)
+            .catch(errorHandler);
+          return beer;
+        });
+      });
+      res.render('pages/datadisplay', { breweries: breweryArray, styles: styleArray, beers: beerArray });
+    })
+    .catch(errorHandler);
+}
+
+
+
+
+
 */
