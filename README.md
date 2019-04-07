@@ -48,17 +48,20 @@ Technologies used:
 
 The group used two daily standups to aid with group communication.
 
-The group planned with github project management tool and whiteboarding. The wireframes and daily whiteboard planning can be found in the wireframes_daily_workflow directory. 
+The group planned with github project management tool and whiteboarding. The wireframes and daily whiteboard planning can be found in the wireframesAndWorkflow directory. 
 
 The github project management can be found at https://github.com/orgs/beerlyfunctional/dashboard.
 
+## User Stories
+
+The user stories can be found in userStories.md
+
 ## Credits and Collaborations
 
-Jagdeep Singh, Trey Herndon, Bonnie Wang, Juliann Talkington
+Development undertaken by Merry Cimakasky, Trey Herdon, Juliann Talkington, Jesse Van Volkinburg
 
 -->
-Credit should be given to CodeFellows for providing all of the frontend javascript, html, and CSS. CodeFellows also gave guidance on the creation of the backend portion.
-
+David Chambers and Caity Heath provided coaching and project guidance. The CodeFellows curriculum was used as reference.
 
 # Communication Plan
 
