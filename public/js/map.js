@@ -1,25 +1,20 @@
-//Running a test on Seattle Washington
-
-// let popup, Popup, breweries;
-// let location = require('../server.js');
-// console.log(location);
-
-
-
+//generates map with brewery locations
 function initMap() {
   $.ajax({
     url: '/breweries',
     type: 'GET',
     success: function(response) {
       console.log(response);
+      //produce the google map based on location selected
       let map = new google.maps.Map(document.getElementById('beer-map'), {
         zoom: 12,
         center: { lat: parseFloat(response.location.lat), lng: parseFloat(response.location.long) }
       });
 
-      //bottle image
-      let image = '/img/beerMarker.png';
+      //beer bottle marker image
+      let image = '/img/label_bottle.png';
 
+      //place marker based on brewery location
       response.breweries.forEach(element =>{
         console.log('-----------------------------')
         console.log(element)
@@ -29,15 +24,14 @@ function initMap() {
           map: map,
           icon: image
         });
-
+        //marker content bubble that includes brewery name and link
         let infowindow = new google.maps.InfoWindow({
           content: `${element.brewery}, /<a href = '/breweries/${element.id}'> View more info! </a>`
         });
 
-        // infowindow.open(map, beerMarker);
-
         var previousMarker = false;
 
+        //listener linked to brewery marker - activated when user clicks on link
         google.maps.event.addListener(beerMarker, 'click', function() {
           if(previousMarker){
             previousMarker.close();
@@ -45,10 +39,8 @@ function initMap() {
           infowindow.open(map, beerMarker);
           previousMarker = infowindow;
         })
-        // console.log(beerMarker)
         beerMarker.setMap(map);
       });
-      console.log('done')
     }
   });
 
